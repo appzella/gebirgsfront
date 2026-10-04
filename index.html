@@ -119,23 +119,59 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .pp-links a{color:var(--front)}
 .pp-fam{display:inline-block;font-size:11px;border:1px solid #2f5f8a;color:#2f5f8a;padding:0 5px;margin-left:6px;vertical-align:1px}
 .maplibregl-popup-content{max-height:min(70vh,520px);overflow:auto}
-.tourbox{position:absolute;z-index:6;top:calc(12px + env(safe-area-inset-top,0px));right:calc(56px + env(safe-area-inset-right,0px));width:330px;
-  background:rgba(252,251,248,.97);border:1px solid var(--ink);box-shadow:0 2px 14px rgba(44,39,33,.22);padding:10px 14px 12px}
-.tb-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.tb-name{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
 .tb-x{font-size:20px;line-height:1;background:none;border:0;color:var(--ink);cursor:pointer;padding:0 4px}
-.tb-act{display:flex;align-items:center;gap:6px}
-.tb-say{display:inline-flex;align-items:center;gap:5px;font:inherit;font-size:12.5px;background:none;border:1px solid var(--ink);color:var(--ink);padding:2px 8px;cursor:pointer}
-.tb-say .w{opacity:.35}
-.tb-say[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
-.tb-say[aria-pressed="true"] .w{opacity:1}
-.tb-say:focus-visible{outline:2px solid var(--front);outline-offset:2px}
-.tourbox h2{font-family:var(--f-label);font-weight:400;font-size:21px;margin:4px 0 4px}
-.tourbox p{font-size:14px;line-height:1.45;margin:0 0 10px}
-.tb-nav{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-soft)}
-.tb-nav button{font:inherit;font-size:14px;background:var(--paper-2);border:1px solid var(--ink);color:var(--ink);padding:4px 10px;cursor:pointer}
-.tb-nav button:disabled{opacity:.35;cursor:default}
-.tb-nav button:focus-visible,.tb-x:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+.tb-x:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+/* ---------- Filmmodus der Touren ---------- */
+.film{position:fixed;inset:0;z-index:8;pointer-events:none;color:#f4efe6;font-family:var(--f-body)}
+.film[hidden]{display:none}
+.film .lb{position:absolute;left:0;right:0;background:#14110d;transition:height .9s ease}
+.film .lb-top{top:0;height:0}.film .lb-bot{bottom:0;height:0}
+.film.on .lb-top{height:7vh}.film.on .lb-bot{height:max(132px,15vh)}
+body.filming .cartouche,body.filming .timebar,body.filming .maplibregl-ctrl-top-right,body.filming .mk.site,body.filming .maplibregl-popup{opacity:0;pointer-events:none;transition:opacity .6s}
+body.filming .maplibregl-ctrl-bottom-right{opacity:.55}
+.f-title{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;gap:10px;padding:24px;background:radial-gradient(ellipse at center,rgba(20,17,13,.72),rgba(20,17,13,.9));pointer-events:auto;transition:opacity .8s}
+.f-title.out{opacity:0;pointer-events:none}
+.ft-kicker{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#c9bfae}
+.f-title h2{font-family:var(--f-display);font-weight:400;font-size:clamp(34px,6vw,68px);line-height:1.05;margin:0;color:#fbf7ef}
+.f-title p{margin:0;font-size:15px;color:#d8cfbf}
+.ft-play{margin-top:14px;font:inherit;font-size:17px;letter-spacing:.06em;color:#14110d;background:#f4efe6;border:0;padding:12px 26px;cursor:pointer}
+.ft-play:hover{background:#fff}
+.ft-alt{display:flex;gap:18px;font-size:13.5px}
+.ft-alt button{font:inherit;background:none;border:0;color:#d8cfbf;text-decoration:underline;cursor:pointer;padding:0}
+.f-chapter{position:absolute;left:clamp(16px,4vw,56px);top:calc(7vh + 22px);max-width:min(520px,60vw);opacity:0;transform:translateY(8px);transition:opacity 1s,transform 1s;background:rgba(20,17,13,.72);padding:10px 18px 12px;border-left:3px solid #b0261c}
+.f-chapter.show{opacity:1;transform:none}
+.f-chapter span{display:block;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:#fff;opacity:.9}
+.f-chapter h3{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,3.6vw,46px);line-height:1.05;margin:4px 0 0;color:#fff}
+.f-photo{position:absolute;right:clamp(16px,3vw,48px);top:calc(7vh + 22px);width:min(320px,30vw);margin:0;background:#14110d;padding:8px 8px 6px;box-shadow:0 10px 40px rgba(0,0,0,.45);opacity:0;transform:rotate(1.2deg) translateY(10px);transition:opacity 1.2s,transform 1.2s}
+.f-photo.show{opacity:1;transform:rotate(1.2deg)}
+.f-photo .fp-frame{overflow:hidden;aspect-ratio:4/3;background:#2a2620}
+.f-photo img{display:block;width:100%;height:100%;object-fit:cover;filter:grayscale(.35) sepia(.25) contrast(1.05)}
+.f-photo.show img{animation:kenburns 26s linear forwards}
+@keyframes kenburns{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-2%,-2%)}}
+.f-photo figcaption{font-size:11.5px;line-height:1.35;color:#c9bfae;margin-top:5px}
+.f-photo figcaption a{color:inherit}
+.f-sub{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(max(132px,15vh) - 92px);width:min(860px,calc(100vw - 32px));min-height:3.1em;text-align:center;font-family:var(--f-label);font-size:clamp(17px,1.6vw,21px);line-height:1.45;color:#f4efe6}
+.f-sub.fade{animation:subin .45s ease}
+@keyframes subin{from{opacity:0}to{opacity:1}}
+.f-ctrl{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:6px;pointer-events:auto;font-size:13px;color:#c9bfae}
+.f-ctrl button{font:inherit;font-size:15px;min-width:34px;height:30px;background:rgba(244,239,230,.08);border:1px solid rgba(244,239,230,.35);color:#f4efe6;cursor:pointer;padding:0 9px}
+.f-ctrl button:hover{background:rgba(244,239,230,.2)}
+.f-ctrl button[aria-pressed="false"]{opacity:.55}
+.f-ctrl button:focus-visible,.ft-play:focus-visible,.ft-alt button:focus-visible{outline:2px solid #f4efe6;outline-offset:2px}
+.f-ctrl #fCount{min-width:58px;text-align:center}
+.f-prog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(244,239,230,.12)}
+.f-prog i{display:block;height:100%;width:0;background:#b0261c}
+@media (max-width:720px){
+  .film.on .lb-top{height:0}.film.on .lb-bot{height:190px}
+  .f-chapter{top:calc(14px + env(safe-area-inset-top,0px));left:14px;max-width:calc(100vw - 150px)}
+  .f-chapter h3{font-size:25px}
+  .f-chapter span{font-size:11px}
+  .f-photo{top:calc(12px + env(safe-area-inset-top,0px));right:10px;width:120px;padding:5px 5px 3px}
+  .f-photo figcaption{display:none}
+  .f-sub{bottom:62px;font-size:16px;line-height:1.4;min-height:4.2em}
+  .f-ctrl button{min-width:38px;height:34px}
+}
+@media (prefers-reduced-motion:reduce){.f-photo.show img{animation:none}}
 .lossdlg{border:1px solid var(--ink);background:var(--paper);color:var(--ink);padding:16px 18px;width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 40px);box-shadow:0 6px 30px rgba(44,39,33,.35)}
 .lossdlg::backdrop{background:rgba(44,39,33,.35)}
 .ld-head{display:flex;justify-content:space-between;align-items:baseline}
@@ -164,11 +200,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
   #phaseText{font-size:12.5px;max-height:5.6em;overflow:auto}
   .ticks span.odd{display:none}
   .cartouche.collapsed .extras{display:none}
-  .tourbox{left:calc(8px + env(safe-area-inset-left,0px));right:calc(8px + env(safe-area-inset-right,0px));width:auto;top:auto;bottom:calc(200px + env(safe-area-inset-bottom,0px));padding:8px 12px 10px}
-  .tourbox h2{font-size:18px}
-  .tourbox p{font-size:13px;max-height:6.2em;overflow:auto}
   .lossdlg{padding:12px}
-  body.touring .timebar .phase{display:none}
 }
 @media (prefers-reduced-motion:reduce){.battle.active .ring{animation:none;opacity:.5}}
 </style>
@@ -197,7 +229,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
     <label class="lg-sub"><input type="checkbox" id="lgFam">nur familientauglich</label>
   </div>
   <div class="extras">
-    <label class="tour-pick"><span>Geführte Tour</span>
+    <label class="tour-pick"><span>Geführte Tour als Film</span>
       <select id="tourSel"><option value="">Tour wählen …</option></select></label>
     <button type="button" id="lossBtn" class="linkbtn">Verluste im Vergleich</button>
   </div>
@@ -218,11 +250,27 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
   <div class="phase"><span id="phaseTitle"></span><span id="phaseText"></span></div>
 </section>
 
-<section class="tourbox" id="tourBox" hidden aria-live="polite">
-  <div class="tb-head"><span class="tb-name" id="tbName"></span><span class="tb-act"><button type="button" class="tb-say" id="tbSay" aria-pressed="false" title="Sprecher einschalten und automatisch weiterblättern"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6H5L9 2.5V13.5L5 10H2Z" fill="currentColor"/><path class="w" d="M11 5.2Q12.6 8 11 10.8M12.8 3.6Q15.4 8 12.8 12.4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>Vorlesen</button><button type="button" class="tb-x" id="tbClose" aria-label="Tour beenden">×</button></span></div>
-  <h2 id="tbTitle"></h2>
-  <p id="tbText"></p>
-  <div class="tb-nav"><button type="button" id="tbPrev">‹ Zurück</button><span id="tbCount"></span><button type="button" id="tbNext">Weiter ›</button></div>
+<section class="film" id="film" hidden aria-label="Geführte Tour">
+  <div class="lb lb-top"></div><div class="lb lb-bot"></div>
+  <div class="f-chapter" id="fChapter"><span id="fcDate"></span><h3 id="fcTitle"></h3></div>
+  <figure class="f-photo" id="fPhoto"><div class="fp-frame"><img id="fpImg" alt=""></div><figcaption id="fpCap"></figcaption></figure>
+  <div class="f-sub" id="fSub" aria-live="polite"></div>
+  <div class="f-ctrl" role="group" aria-label="Filmsteuerung">
+    <button type="button" id="fPrev" aria-label="Vorheriges Kapitel">‹</button>
+    <button type="button" id="fPause" aria-label="Pause">❚❚</button>
+    <button type="button" id="fNext" aria-label="Nächstes Kapitel">›</button>
+    <span id="fCount"></span>
+    <button type="button" id="fSound" aria-pressed="true">Ton</button>
+    <button type="button" id="fClose" aria-label="Tour beenden">×</button>
+  </div>
+  <div class="f-prog"><i id="fProg"></i></div>
+  <div class="f-title" id="fTitle">
+    <div class="ft-kicker">Gebirgsfront 1915–1918</div>
+    <h2 id="ftName"></h2>
+    <p id="ftMeta"></p>
+    <button type="button" class="ft-play" id="ftPlay">▶ Film starten</button>
+    <div class="ft-alt"><button type="button" id="ftSilent">ohne Ton, mit Untertiteln</button><button type="button" id="ftBack">zurück zur Karte</button></div>
+  </div>
 </section>
 
 <dialog class="lossdlg" id="lossDlg" aria-labelledby="lossTitle">
@@ -684,65 +732,130 @@ map.on("click","sup-hit",e=>{
 map.on("mouseenter","sup-hit",()=>map.getCanvas().style.cursor="pointer");
 map.on("mouseleave","sup-hit",()=>map.getCanvas().style.cursor="");
 
-/* ---------- Geführte Touren ---------- */
+/* ---------- Geführte Touren als Film ---------- */
 const TOURS=window.TOURS||[];
-const tourSel=document.getElementById("tourSel"),tbox=document.getElementById("tourBox");
-const tbPrev=document.getElementById("tbPrev"),tbNext=document.getElementById("tbNext");
+const tourSel=document.getElementById("tourSel"),film=document.getElementById("film");
+const $=id=>document.getElementById(id);
+const fTitle=$("fTitle"),fChapter=$("fChapter"),fPhoto=$("fPhoto"),fpImg=$("fpImg"),fSub=$("fSub"),fProg=$("fProg"),fPause=$("fPause"),fSound=$("fSound");
 TOURS.forEach(t=>tourSel.add(new Option(t.t,t.id)));
 if(!TOURS.length)tourSel.closest("label").hidden=true;
-let tour=null,tstep=0;
 function terrain(on){
   b2.setAttribute("aria-pressed",String(!on));b3.setAttribute("aria-pressed",String(on));
   if(on&&!map.getTerrain()){map.setTerrain({source:"dem",exaggeration:1.4});if(map.setSky)map.setSky(SKY);}
 }
-function showStep(){
-  const s=tour.steps[tstep];
-  if(timer)setPlaying(false);
+const au=new Audio();au.preload="auto";
+let tour=null,ch=0,gen=0,paused=false,sound=true,clock=null,sents=[],lens=[],dur=0,t0=0,elapsed=0,cam=null,photoT=null;
+const sentences=x=>x.split(/(?<=(?<!\d)[.!?:])\s+/).filter(Boolean);
+const scene=()=>ch===0?Object.assign({h:tour.t},tour.i):tour.steps[ch-1];
+const padding=()=>narrow?{top:120,bottom:200,left:0,right:0}:{top:innerHeight*.07+90,bottom:Math.max(132,innerHeight*.15)+20,left:40,right:Math.min(380,innerWidth*.3+60)};
+function showSub(i){
+  if(fSub.dataset.i===String(i))return;
+  fSub.dataset.i=i;fSub.textContent=sents[i]||"";
+  fSub.classList.remove("fade");void fSub.offsetWidth;fSub.classList.add("fade");
+}
+function tick(){
+  if(!tour)return;
+  const ready=au.duration>0&&isFinite(au.duration);
+  const t=sound?(ready?au.currentTime*1000:0):elapsed+(paused?0:performance.now()-t0);
+  const D=sound?(ready?au.duration*1000:1e9):dur;
+  let acc=0,tot=lens.reduce((a,b)=>a+b,0),i=0;
+  for(;i<lens.length-1;i++){acc+=lens[i];if(t<D*acc/tot)break;}
+  showSub(i);
+  fProg.style.width=Math.min(100,100*(ch+Math.min(1,t/D||0))/(tour.steps.length+1))+"%";
+  if(!sound&&!paused&&t>=dur)return next(true);
+  clock=requestAnimationFrame(tick);
+}
+function drift(ms){
+  const s=scene();
+  map.easeTo({bearing:(s.b||0)+(ch%2?9:-9),zoom:(narrow?s.z-0.7:s.z)+0.35,pitch:s.p||0,duration:ms,easing:t=>t,padding:padding()});
+}
+function play(){
+  const g=++gen,s=scene();
+  cancelAnimationFrame(clock);clearTimeout(photoT);au.pause();map.stop();
+  paused=false;fPause.textContent="❚❚";fPause.setAttribute("aria-label","Pause");
   slider.value=s.m;update(s.m);
   if(openPop){openPop.remove();openPop=null;}
-  document.getElementById("tbName").textContent=tour.t;
-  document.getElementById("tbTitle").textContent=s.h;
-  document.getElementById("tbText").textContent=s.x;
-  document.getElementById("tbCount").textContent=`${tstep+1} von ${tour.steps.length}`;
-  tbPrev.disabled=tstep===0;
-  tbNext.textContent=tstep===tour.steps.length-1?"Fertig":"Weiter ›";
   if(s.p>0)terrain(true);
-  let tbB=0;
-  if(narrow){tbB=innerHeight-document.querySelector(".timebar").getBoundingClientRect().top+8;tbox.style.bottom=tbB+"px";}
-  const pad=narrow?{top:150,bottom:Math.min(innerHeight-250,tbB+tbox.offsetHeight),left:0,right:0}:{top:20,bottom:150,left:Math.min(330,cart.offsetWidth+20),right:400};
-  map.flyTo({center:s.c,zoom:narrow?s.z-0.7:s.z,pitch:s.p||0,bearing:s.b||0,padding:pad,duration:2800,essential:true});
-  say();
+  $("fcDate").textContent=mName(s.m);$("fcTitle").textContent=ch===0?tour.t:s.h;
+  fChapter.classList.remove("show");void fChapter.offsetWidth;setTimeout(()=>g===gen&&fChapter.classList.add("show"),400);
+  fPhoto.classList.remove("show");
+  if(s.img){
+    const f=encodeURIComponent(s.img.replace(/ /g,"_"));
+    fpImg.src=`https://commons.wikimedia.org/wiki/Special:FilePath/${f}?width=640`;fpImg.alt=s.cap||"";
+    $("fpCap").innerHTML=`${esc(s.cap||"")} · <a href="https://commons.wikimedia.org/wiki/File:${f}" target="_blank" rel="noopener">Commons</a>`;
+    photoT=setTimeout(()=>g===gen&&fPhoto.classList.add("show"),2600);
+  }
+  $("fCount").textContent=ch===0?"Vorspann":`${ch} / ${tour.steps.length}`;
+  $("fPrev").disabled=ch===0;
+  sents=sentences(s.x);lens=sents.map(x=>x.length+12);fSub.dataset.i="";
+  dur=Math.max(9000,s.x.length*62);elapsed=0;t0=performance.now();
+  map.flyTo({center:s.c,zoom:narrow?s.z-0.7:s.z,pitch:s.p||0,bearing:s.b||0,padding:padding(),duration:ch===0?3500:5200,curve:1.3,essential:true});
+  map.once("moveend",()=>{if(g!==gen||paused)return;const D=sound&&au.duration?au.duration*1000:dur;drift(Math.max(4000,D-(sound?au.currentTime*1000:performance.now()-t0)+1500));});
+  if(sound){
+    au.src=`audio/${tour.id}-${ch}.mp3`;
+    au.onended=()=>{if(g===gen)setTimeout(()=>g===gen&&!paused&&next(true),1600);};
+    au.play().catch(()=>{sound=false;fSound.setAttribute("aria-pressed","false");});
+  }
+  clock=requestAnimationFrame(tick);
 }
-// Sprecher: fertige Tondateien je Tourschritt (audio/<tour>-<schritt>.mp3), danach geht es automatisch weiter
-const tbSay=document.getElementById("tbSay"),au=new Audio();au.preload="auto";
-let sayOn=false,sayGen=0,advT=null;
-try{sayOn=localStorage.getItem("gf-say")==="1";}catch(e){}
-tbSay.setAttribute("aria-pressed",String(sayOn));
-function hush(){sayGen++;clearTimeout(advT);au.pause();}
-function say(){
-  hush();if(!sayOn||!tour)return;
-  const g=sayGen;
-  au.src=`audio/${tour.id}-${tstep+1}.mp3`;
-  au.onended=()=>{if(g!==sayGen||!tour||tstep>=tour.steps.length-1)return;advT=setTimeout(()=>{if(g===sayGen&&tour){tstep++;showStep();}},1500);};
-  au.play().catch(()=>{});
+function next(auto){
+  if(!tour)return;
+  if(ch<tour.steps.length){ch++;play();}
+  else if(auto)endCard();
 }
-tbSay.addEventListener("click",()=>{
-  sayOn=!sayOn;tbSay.setAttribute("aria-pressed",String(sayOn));
-  try{localStorage.setItem("gf-say",sayOn?"1":"0");}catch(e){}
-  sayOn?say():hush();
-});
+function endCard(){
+  gen++;cancelAnimationFrame(clock);au.pause();
+  $("ftName").textContent="Ende";$("ftMeta").textContent=tour.t;
+  $("ftPlay").textContent="↺ Nochmals ansehen";$("ftSilent").hidden=true;
+  fTitle.classList.remove("out");fProg.style.width="100%";
+}
+function pause(on){
+  paused=on;fPause.textContent=on?"▶":"❚❚";fPause.setAttribute("aria-label",on?"Weiter abspielen":"Pause");
+  if(on){au.pause();map.stop();elapsed+=performance.now()-t0;}
+  else{t0=performance.now();if(sound)au.play().catch(()=>{});const D=sound&&au.duration?(au.duration-au.currentTime)*1000:dur-elapsed;drift(Math.max(3000,D+1500));}
+}
 function startTour(id){
   tour=TOURS.find(t=>t.id===id);if(!tour){endTour();return;}
-  tstep=0;tbox.hidden=false;document.body.classList.add("touring");
-  if(narrow&&!cart.classList.contains("collapsed"))tc.click();
-  showStep();tbNext.focus();
+  if(timer)setPlaying(false);
+  ch=0;gen++;film.hidden=false;document.body.classList.add("filming");
+  requestAnimationFrame(()=>film.classList.add("on"));
+  $("ftName").textContent=tour.t;$("ftMeta").textContent=`Vorspann und ${tour.steps.length} Kapitel · rund ${Math.round((tour.steps.length+1)*22/60)} Minuten`;
+  $("ftPlay").textContent="▶ Film starten";$("ftSilent").hidden=false;
+  fTitle.classList.remove("out");fSub.textContent="";fChapter.classList.remove("show");fPhoto.classList.remove("show");fProg.style.width="0";
+  const s=tour.i;slider.value=s.m;update(s.m);
+  map.flyTo({center:s.c,zoom:(narrow?s.z-0.7:s.z)-0.4,pitch:20,bearing:0,duration:3000,essential:true});
+  $("ftPlay").focus();
 }
-function endTour(){hush();tour=null;tbox.hidden=true;document.body.classList.remove("touring");tourSel.value="";map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:0});}
+function begin(withSound){
+  sound=withSound;fSound.setAttribute("aria-pressed",String(sound));
+  fTitle.classList.add("out");ch=0;play();
+}
+function endTour(){
+  gen++;cancelAnimationFrame(clock);clearTimeout(photoT);au.pause();map.stop();tour=null;
+  film.classList.remove("on");document.body.classList.remove("filming");
+  setTimeout(()=>{if(!tour)film.hidden=true;},600);
+  tourSel.value="";map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:800});
+}
 tourSel.addEventListener("change",()=>tourSel.value?startTour(tourSel.value):endTour());
-tbPrev.addEventListener("click",()=>{if(tstep>0){tstep--;showStep();}});
-tbNext.addEventListener("click",()=>{if(tstep<tour.steps.length-1){tstep++;showStep();}else endTour();});
-document.getElementById("tbClose").addEventListener("click",endTour);
-document.addEventListener("keydown",e=>{if(!tour||e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;if(e.key==="ArrowRight")tbNext.click();else if(e.key==="ArrowLeft")tbPrev.click();else if(e.key==="Escape")endTour();});
+$("ftPlay").addEventListener("click",()=>begin(true));
+$("ftSilent").addEventListener("click",()=>begin(false));
+$("ftBack").addEventListener("click",endTour);
+$("fClose").addEventListener("click",endTour);
+$("fPrev").addEventListener("click",()=>{if(ch>0){ch--;play();}});
+$("fNext").addEventListener("click",()=>{if(ch<tour.steps.length){ch++;play();}else endCard();});
+fPause.addEventListener("click",()=>pause(!paused));
+fSound.addEventListener("click",()=>{
+  sound=!sound;fSound.setAttribute("aria-pressed",String(sound));
+  if(sound){au.src=`audio/${tour.id}-${ch}.mp3`;play();}else{au.pause();elapsed=0;t0=performance.now();dur=Math.max(dur,9000);}
+});
+document.addEventListener("keydown",e=>{
+  if(!tour||e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;
+  if(e.key==="Escape")endTour();
+  else if(!fTitle.classList.contains("out"))return;
+  else if(e.key==="ArrowRight")$("fNext").click();
+  else if(e.key==="ArrowLeft")$("fPrev").click();
+  else if(e.key===" "&&e.target.tagName!=="BUTTON"){e.preventDefault();fPause.click();}
+});
 
 /* ---------- Verluste im Vergleich ---------- */
 const lossDlg=document.getElementById("lossDlg"),lossTip=document.getElementById("lossTip");
