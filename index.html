@@ -261,6 +261,7 @@ body.filming .maplibregl-ctrl-bottom-right{opacity:.55}
     <button type="button" id="fNext" aria-label="Nächstes Kapitel">›</button>
     <span id="fCount"></span>
     <button type="button" id="fSound" aria-pressed="true">Ton</button>
+    <button type="button" id="fMusic" aria-pressed="true" aria-label="Musik">♫</button>
     <button type="button" id="fClose" aria-label="Tour beenden">×</button>
   </div>
   <div class="f-prog"><i id="fProg"></i></div>
@@ -287,6 +288,7 @@ body.filming .maplibregl-ctrl-bottom-right{opacity:.55}
 <script src="data/sites.js"></script>
 <script src="data/media.js"></script>
 <script src="data/supply.js"></script>
+<script src="data/images.js"></script>
 <script>
 (function(){
 const BOUNDS=[9.6,45.15,14.3,47.05];
@@ -551,11 +553,15 @@ function bindPop(m,el,pop){
 const MEDIA=window.MEDIA||{forts:{},battles:{}},STATS=window.STATS||{};
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const fmtN=n=>typeof n==="number"?n.toLocaleString("de-CH"):esc(n);
+/* Bilder kommen als verkleinerte WebP-Kopie vom eigenen Server (tools/fetch_images.py), sonst direkt von Commons */
+const IMGS=window.IMGS||{};
+const commonsFile=n=>encodeURIComponent(n.replace(/ /g,"_"));
+const imgSrc=(n,w)=>IMGS[n]?`img/${IMGS[n]}-${w}.webp`:`https://commons.wikimedia.org/wiki/Special:FilePath/${commonsFile(n)}?width=${w}`;
 function imgHTML(md){
   if(!md||!md.img)return "";
-  const f=encodeURIComponent(md.img.replace(/ /g,"_"));
+  const f=commonsFile(md.img);
   const cap=[md.cap,md.artist,md.license].filter(Boolean).map(esc).join(" · ");
-  return `<figure class="pp-img"><img loading="lazy" alt="${esc(md.cap||"")}" src="https://commons.wikimedia.org/wiki/Special:FilePath/${f}?width=480"><figcaption>${cap} · <a href="https://commons.wikimedia.org/wiki/File:${f}" target="_blank" rel="noopener">Wikimedia Commons</a></figcaption></figure>`;
+  return `<figure class="pp-img"><img loading="lazy" decoding="async" alt="${esc(md.cap||"")}" src="${imgSrc(md.img,480)}"><figcaption>${cap} · <a href="https://commons.wikimedia.org/wiki/File:${f}" target="_blank" rel="noopener">Wikimedia Commons</a></figcaption></figure>`;
 }
 function statsHTML(st){
   if(!st)return "";
@@ -744,6 +750,29 @@ function terrain(on){
   if(on&&!map.getTerrain()){map.setTerrain({source:"dem",exaggeration:1.4});if(map.setSky)map.setSky(SKY);}
 }
 const au=new Audio();au.preload="auto";
+/* Hintergrundmusik je Tour (audio/music-<tour>.mp3, tools/tour_music.py): leise unter dem Sprecher, lauter in den Pausen.
+   Lautstärke über Web Audio, weil iOS die volume-Eigenschaft von Audio-Elementen ignoriert. */
+const mu=new Audio();mu.loop=true;mu.preload="auto";
+let music=true,mctx=null,mgain=null,mfade=null;
+function musicLevel(){
+  if(!tour||!music||paused||!fTitle.classList.contains("out")&&ch===0&&!mu.dataset.end)return 0;
+  return sound&&!au.paused&&!au.ended?0.16:0.42;
+}
+let mlast=-1,moff=0;
+function musicMix(){
+  const v=musicLevel();
+  if(v>0&&mu.paused&&mu.src)mu.play().catch(()=>{});
+  if(v!==mlast){mlast=v;moff=performance.now();
+    if(mgain)mgain.gain.setTargetAtTime(v,mctx.currentTime,0.5);else mu.volume=v;}  // weich überblenden
+  if(v===0&&!mu.paused&&performance.now()-moff>2500){mu.pause();if(!tour){clearInterval(mfade);mfade=null;}}
+}
+function musicStart(){
+  try{
+    if(!mctx){mctx=new (window.AudioContext||window.webkitAudioContext)();mgain=mctx.createGain();mgain.gain.value=0;mctx.createMediaElementSource(mu).connect(mgain).connect(mctx.destination);}
+    mctx.resume();
+  }catch(e){mgain=null;mu.volume=0;}
+  mlast=-1;if(!mfade)mfade=setInterval(musicMix,200);
+}
 let tour=null,ch=0,gen=0,paused=false,sound=true,clock=null,sents=[],lens=[],dur=0,t0=0,elapsed=0,cam=null,photoT=null;
 const sentences=x=>x.split(/(?<=(?<!\d)[.!?:])\s+/).filter(Boolean);
 const scene=()=>ch===0?Object.assign({h:tour.t},tour.i):tour.steps[ch-1];
@@ -780,10 +809,11 @@ function play(){
   fChapter.classList.remove("show");void fChapter.offsetWidth;setTimeout(()=>g===gen&&fChapter.classList.add("show"),400);
   fPhoto.classList.remove("show");
   if(s.img){
-    const f=encodeURIComponent(s.img.replace(/ /g,"_"));
-    fpImg.src=`https://commons.wikimedia.org/wiki/Special:FilePath/${f}?width=640`;fpImg.alt=s.cap||"";
+    const f=commonsFile(s.img);
+    fpImg.src=imgSrc(s.img,960);fpImg.alt=s.cap||"";
     $("fpCap").innerHTML=`${esc(s.cap||"")} · <a href="https://commons.wikimedia.org/wiki/File:${f}" target="_blank" rel="noopener">Commons</a>`;
-    photoT=setTimeout(()=>g===gen&&fPhoto.classList.add("show"),2600);
+    const ready=fpImg.decode().catch(()=>{});  // Foto erst einblenden, wenn es geladen ist
+    photoT=setTimeout(()=>ready.then(()=>g===gen&&fPhoto.classList.add("show")),2600);
   }
   $("fCount").textContent=ch===0?"Vorspann":`${ch} / ${tour.steps.length}`;
   $("fPrev").disabled=ch===0;
@@ -806,7 +836,7 @@ function next(auto){
 function endCard(){
   gen++;cancelAnimationFrame(clock);au.pause();
   $("ftName").textContent="Ende";$("ftMeta").textContent=tour.t;
-  $("ftPlay").textContent="↺ Nochmals ansehen";$("ftSilent").hidden=true;
+  $("ftPlay").textContent="↺ Nochmals ansehen";$("ftSilent").hidden=true;mu.dataset.end="1";
   fTitle.classList.remove("out");fProg.style.width="100%";
 }
 function pause(on){
@@ -819,16 +849,20 @@ function startTour(id){
   if(timer)setPlaying(false);
   ch=0;gen++;film.hidden=false;document.body.classList.add("filming");
   requestAnimationFrame(()=>film.classList.add("on"));
-  $("ftName").textContent=tour.t;$("ftMeta").textContent=`Vorspann und ${tour.steps.length} Kapitel · rund ${Math.round((tour.steps.length+1)*22/60)} Minuten`;
+  $("ftName").textContent=tour.t;$("ftMeta").textContent=`Vorspann und ${tour.steps.length} Kapitel · rund ${Math.round((tour.steps.length+1)*27/60)} Minuten`;
   $("ftPlay").textContent="▶ Film starten";$("ftSilent").hidden=false;
   fTitle.classList.remove("out");fSub.textContent="";fChapter.classList.remove("show");fPhoto.classList.remove("show");fProg.style.width="0";
+  tour.steps.forEach(st=>{if(st.img)new Image().src=imgSrc(st.img,960);});
+  delete mu.dataset.end;if(!mu.src.endsWith(`music-${tour.id}.mp3`))mu.src=`audio/music-${tour.id}.mp3`;  // Fotos vorladen, während die Titelkarte steht
   const s=tour.i;slider.value=s.m;update(s.m);
   map.flyTo({center:s.c,zoom:(narrow?s.z-0.7:s.z)-0.4,pitch:20,bearing:0,duration:3000,essential:true});
   $("ftPlay").focus();
 }
 function begin(withSound){
   sound=withSound;fSound.setAttribute("aria-pressed",String(sound));
-  fTitle.classList.add("out");ch=0;play();
+  music=withSound;$("fMusic").setAttribute("aria-pressed",String(music));
+  delete mu.dataset.end;if(fTitle.querySelector("#ftPlay").textContent.startsWith("↺"))mu.currentTime=0;
+  fTitle.classList.add("out");ch=0;musicStart();play();
 }
 function endTour(){
   gen++;cancelAnimationFrame(clock);clearTimeout(photoT);au.pause();map.stop();tour=null;
@@ -844,6 +878,7 @@ $("fClose").addEventListener("click",endTour);
 $("fPrev").addEventListener("click",()=>{if(ch>0){ch--;play();}});
 $("fNext").addEventListener("click",()=>{if(ch<tour.steps.length){ch++;play();}else endCard();});
 fPause.addEventListener("click",()=>pause(!paused));
+$("fMusic").addEventListener("click",()=>{music=!music;$("fMusic").setAttribute("aria-pressed",String(music));musicStart();});
 fSound.addEventListener("click",()=>{
   sound=!sound;fSound.setAttribute("aria-pressed",String(sound));
   if(sound){au.src=`audio/${tour.id}-${ch}.mp3`;play();}else{au.pause();elapsed=0;t0=performance.now();dur=Math.max(dur,9000);}
