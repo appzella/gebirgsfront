@@ -133,7 +133,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
     <label><input type="checkbox" id="lgKuk" checked><svg class="sw" viewBox="-15 -6 30 12"><rect x="-4.5" y="-4.5" width="9" height="9" transform="rotate(45)" fill="#b8860b" stroke="#2c2721" stroke-width="1"/></svg>Werke Österreich-Ungarn</label>
     <label><input type="checkbox" id="lgIta" checked><svg class="sw" viewBox="-15 -6 30 12"><rect x="-4.5" y="-4.5" width="9" height="9" transform="rotate(45)" fill="#2e6a4c" stroke="#2c2721" stroke-width="1"/></svg>Forti Italien</label>
   </div>
-  <p class="note">Frontlinien, Ortsangaben und Festungsstandorte sind historische Näherungen nach Übersichtskarten, keine Vermessung. Im Hochgebirge verliefen die Stellungen kleinteiliger, als eine Linie zeigen kann.</p>
+  <p class="note">Gipfel, Kampforte und viele Festungswerke sind anhand von Lexikonkoordinaten und dem Höhenmodell eingemessen. Die Frontlinie verbindet diese Stützpunkte und bleibt dazwischen eine Näherung; im Hochgebirge verliefen die Stellungen kleinteiliger.</p>
   <button class="toggle-cart" id="toggleCart" type="button">Legende einblenden</button>
 </section>
 
@@ -161,44 +161,44 @@ const mName=i=>{const t=i+4;return MONTHS[t%12]+" "+(1915+Math.floor(t/12));};
 /* ---------- Frontsegmente [lat, lon] ---------- */
 const S={};
 // Stilfserjoch bis Gardasee: Grenze 1914
-S.west14=[[46.535,10.452],[46.52,10.47],[46.49,10.53],[46.48,10.57],[46.45,10.62],[46.42,10.62],[46.384,10.585],[46.35,10.57],[46.30,10.57],[46.262,10.585],[46.225,10.58],[46.16,10.56],[46.12,10.58],[46.07,10.56],[46.03,10.52],[45.96,10.48],[45.90,10.50],[45.815,10.525],[45.81,10.58],[45.80,10.63],[45.83,10.68],[45.84,10.73],[45.843,10.795]];
+S.west14=[[46.5337,10.4543],[46.5122,10.4677],[46.49,10.53],[46.4794,10.5666],[46.4441,10.6174],[46.4164,10.6178],[46.3778,10.5676],[46.3681,10.5532],[46.30,10.57],[46.262,10.585],[46.2196,10.5865],[46.1616,10.5591],[46.1481,10.5924],[46.1076,10.5961],[46.07,10.56],[46.03,10.52],[45.96,10.48],[45.90,10.50],[45.815,10.525],[45.81,10.58],[45.80,10.63],[45.83,10.68],[45.84,10.73],[45.843,10.795]];
 // Gardasee bis Valsugana (Grenze 1914)
-S.trent14=[[45.835,10.852],[45.80,10.89],[45.76,10.91],[45.695,10.93],[45.70,10.99],[45.69,11.04],[45.72,11.13],[45.77,11.18],[45.795,11.18],[45.85,11.215],[45.875,11.255],[45.905,11.32],[45.955,11.39],[45.98,11.43],[45.995,11.47],[46.01,11.545],[45.99,11.64],[45.98,11.70]];
+S.trent14=[[45.835,10.852],[45.80,10.89],[45.76,10.91],[45.695,10.93],[45.70,10.99],[45.69,11.04],[45.72,11.13],[45.77,11.18],[45.7937,11.1764],[45.85,11.215],[45.875,11.255],[45.905,11.32],[45.955,11.39],[45.98,11.43],[45.9976,11.4682],[46.0085,11.5228],[45.99,11.64],[45.98,11.70]];
 // Valsugana bis Kreuzbergsattel (Grenze 1914)
-S.dolo14=[[45.98,11.70],[46.04,11.75],[46.11,11.81],[46.15,11.93],[46.20,11.90],[46.27,11.92],[46.33,11.84],[46.38,11.79],[46.435,11.86],[46.45,11.94],[46.455,11.99],[46.48,12.06],[46.50,12.13],[46.53,12.20],[46.58,12.22],[46.60,12.25],[46.62,12.30],[46.64,12.36],[46.655,12.40],[46.655,12.425]];
+S.dolo14=[[45.98,11.70],[46.04,11.75],[46.11,11.81],[46.15,11.93],[46.20,11.90],[46.27,11.92],[46.33,11.84],[46.38,11.79],[46.4356,11.8493],[46.45,11.94],[46.455,11.99],[46.48,12.06],[46.50,12.13],[46.53,12.20],[46.58,12.22],[46.60,12.25],[46.62,12.30],[46.64,12.36],[46.655,12.40],[46.655,12.425]];
 // Karnischer Kamm bis Pontafel (Grenze, im Wesentlichen unverändert bis Okt. 1917)
-S.carn=[[46.655,12.425],[46.67,12.50],[46.66,12.56],[46.63,12.73],[46.62,12.80],[46.61,12.88],[46.605,12.94],[46.59,13.02],[46.57,13.12],[46.56,13.25],[46.51,13.31]];
+S.carn=[[46.655,12.425],[46.67,12.50],[46.66,12.56],[46.6295,12.7203],[46.62,12.80],[46.6074,12.8834],[46.605,12.94],[46.59,13.02],[46.57,13.12],[46.56,13.25],[46.51,13.31]];
 // Julische Alpen und Isonzo bis zur Adria (Grenze 1914)
 S.isonzo14=[[46.51,13.31],[46.45,13.40],[46.40,13.44],[46.36,13.45],[46.30,13.39],[46.25,13.45],[46.21,13.53],[46.15,13.55],[46.10,13.52],[46.04,13.48],[45.97,13.45],[45.90,13.40],[45.84,13.34],[45.78,13.30],[45.71,13.25]];
 
 // Juni 1915 – April 1916
-S.west15=[[46.535,10.452],[46.52,10.47],[46.49,10.53],[46.48,10.57],[46.45,10.62],[46.42,10.62],[46.384,10.585],[46.35,10.57],[46.30,10.57],[46.262,10.585],[46.225,10.58],[46.16,10.56],[46.12,10.58],[46.07,10.56],[46.03,10.52],[45.96,10.50],[45.90,10.57],[45.88,10.62],[45.885,10.68],[45.90,10.73],[45.88,10.79],[45.865,10.83],[45.858,10.842]];
-S.trent15=[[45.85,10.86],[45.83,10.90],[45.84,10.96],[45.85,11.00],[45.85,11.04],[45.84,11.10],[45.80,11.18],[45.85,11.215],[45.875,11.255],[45.905,11.32],[45.955,11.39],[45.98,11.43],[45.995,11.47],[46.04,11.43],[46.07,11.43],[46.12,11.47]];
-S.dolo15=[[46.12,11.47],[46.14,11.51],[46.17,11.56],[46.20,11.60],[46.245,11.62],[46.265,11.68],[46.28,11.73],[46.295,11.77],[46.32,11.80],[46.355,11.80],[46.385,11.78],[46.40,11.80],[46.415,11.84],[46.435,11.86],[46.45,11.89],[46.47,11.93],[46.495,11.965],[46.505,11.975],[46.515,11.99],[46.52,12.005],[46.53,12.01],[46.54,12.03],[46.555,12.06],[46.575,12.08],[46.59,12.11],[46.60,12.15],[46.605,12.19],[46.61,12.235],[46.62,12.27],[46.625,12.30],[46.635,12.33],[46.65,12.36],[46.66,12.39],[46.655,12.425]];
-S.isonzo15=[[46.51,13.31],[46.47,13.36],[46.43,13.42],[46.40,13.46],[46.385,13.50],[46.375,13.535],[46.36,13.535],[46.335,13.545],[46.325,13.57],[46.31,13.60],[46.295,13.635],[46.285,13.655],[46.27,13.668],[46.255,13.68],[46.24,13.69],[46.22,13.70],[46.205,13.71],[46.19,13.715],[46.175,13.705],[46.165,13.705],[46.155,13.715],[46.15,13.73],[46.13,13.70],[46.11,13.67],[46.09,13.645],[46.075,13.61],[46.065,13.595],[46.045,13.60],[46.02,13.605],[45.995,13.61],[45.98,13.60],[45.97,13.595],[45.955,13.595],[45.94,13.594],[45.925,13.585],[45.915,13.565],[45.905,13.555],[45.89,13.545],[45.87,13.54],[45.85,13.545],[45.83,13.545],[45.81,13.548],[45.795,13.556],[45.785,13.56]];
+S.west15=[[46.5337,10.4543],[46.5122,10.4677],[46.49,10.53],[46.4794,10.5666],[46.4441,10.6174],[46.4164,10.6178],[46.3778,10.5676],[46.3681,10.5532],[46.30,10.57],[46.262,10.585],[46.2196,10.5865],[46.1616,10.5591],[46.1481,10.5924],[46.1076,10.5961],[46.07,10.56],[46.03,10.52],[45.96,10.50],[45.90,10.57],[45.88,10.62],[45.885,10.68],[45.90,10.73],[45.88,10.79],[45.865,10.83],[45.858,10.842]];
+S.trent15=[[45.85,10.86],[45.83,10.90],[45.84,10.96],[45.85,11.00],[45.838,11.0531],[45.84,11.10],[45.7937,11.1764],[45.85,11.215],[45.875,11.255],[45.905,11.32],[45.955,11.39],[45.98,11.43],[45.9976,11.4682],[46.04,11.43],[46.07,11.43],[46.12,11.47]];
+S.dolo15=[[46.12,11.47],[46.14,11.51],[46.17,11.56],[46.20,11.60],[46.245,11.62],[46.265,11.68],[46.28,11.73],[46.295,11.77],[46.32,11.80],[46.355,11.80],[46.385,11.78],[46.40,11.80],[46.415,11.84],[46.4356,11.8493],[46.45,11.89],[46.47,11.93],[46.495,11.965],[46.4966,11.9595],[46.515,11.99],[46.52,12.005],[46.5295,12.0051],[46.54,12.03],[46.555,12.06],[46.575,12.08],[46.59,12.11],[46.60,12.15],[46.605,12.19],[46.6163,12.2437],[46.62,12.27],[46.6295,12.3207],[46.635,12.33],[46.65,12.36],[46.6441,12.3825],[46.655,12.425]];
+S.isonzo15=[[46.51,13.31],[46.47,13.36],[46.43,13.42],[46.40,13.46],[46.385,13.50],[46.3665,13.5535],[46.36,13.535],[46.335,13.545],[46.325,13.57],[46.31,13.60],[46.295,13.635],[46.285,13.655],[46.2659,13.6582],[46.262,13.672],[46.255,13.68],[46.2194,13.6946],[46.22,13.70],[46.205,13.71],[46.19,13.715],[46.175,13.705],[46.165,13.705],[46.155,13.715],[46.15,13.73],[46.13,13.70],[46.11,13.67],[46.09,13.645],[46.075,13.61],[46.065,13.595],[46.045,13.60],[46.02,13.605],[45.99,13.627],[45.98,13.60],[45.97,13.595],[45.955,13.595],[45.94,13.594],[45.925,13.585],[45.915,13.565],[45.905,13.555],[45.89,13.545],[45.87,13.54],[45.85,13.545],[45.83,13.545],[45.81,13.548],[45.795,13.556],[45.785,13.56]];
 
 // Strafexpedition, Höchststand Anfang Juni 1916
-S.trent16a=[[45.85,10.86],[45.83,10.90],[45.84,10.96],[45.85,11.00],[45.84,11.03],[45.80,11.05],[45.80,11.08],[45.79,11.12],[45.795,11.18],[45.78,11.24],[45.79,11.31],[45.80,11.35],[45.82,11.40],[45.835,11.44],[45.85,11.47],[45.855,11.52],[45.87,11.57],[45.90,11.62],[45.94,11.66],[45.98,11.66],[46.05,11.60],[46.12,11.55]];
-S.dolo16a=[[46.12,11.55],[46.17,11.56],[46.20,11.60],[46.245,11.62],[46.265,11.68],[46.28,11.73],[46.295,11.77],[46.32,11.80],[46.355,11.80],[46.385,11.78],[46.40,11.80],[46.415,11.84],[46.435,11.86],[46.45,11.89],[46.47,11.93],[46.495,11.965],[46.505,11.975],[46.515,11.99],[46.52,12.005],[46.53,12.01],[46.54,12.03],[46.555,12.06],[46.575,12.08],[46.59,12.11],[46.60,12.15],[46.605,12.19],[46.61,12.235],[46.62,12.27],[46.625,12.30],[46.635,12.33],[46.65,12.36],[46.66,12.39],[46.655,12.425]];
+S.trent16a=[[45.85,10.86],[45.83,10.90],[45.84,10.96],[45.85,11.00],[45.84,11.03],[45.7992,11.0689],[45.80,11.08],[45.79,11.12],[45.7937,11.1764],[45.78,11.24],[45.79,11.31],[45.80,11.35],[45.8165,11.4112],[45.835,11.44],[45.85,11.47],[45.855,11.52],[45.87,11.57],[45.9133,11.6048],[45.94,11.66],[45.98,11.66],[46.05,11.60],[46.12,11.55]];
+S.dolo16a=[[46.12,11.55],[46.17,11.56],[46.20,11.60],[46.245,11.62],[46.265,11.68],[46.28,11.73],[46.295,11.77],[46.32,11.80],[46.355,11.80],[46.385,11.78],[46.40,11.80],[46.415,11.84],[46.4356,11.8493],[46.45,11.89],[46.47,11.93],[46.495,11.965],[46.4966,11.9595],[46.515,11.99],[46.52,12.005],[46.5295,12.0051],[46.54,12.03],[46.555,12.06],[46.575,12.08],[46.59,12.11],[46.60,12.15],[46.605,12.19],[46.6163,12.2437],[46.62,12.27],[46.6295,12.3207],[46.635,12.33],[46.65,12.36],[46.6441,12.3825],[46.655,12.425]];
 // Nach der italienischen Gegenoffensive (ab Juli 1916)
-S.trent16b=[[45.85,10.86],[45.83,10.90],[45.84,10.96],[45.85,11.00],[45.85,11.04],[45.80,11.05],[45.80,11.08],[45.80,11.18],[45.805,11.22],[45.81,11.26],[45.815,11.30],[45.82,11.335],[45.835,11.36],[45.85,11.38],[45.865,11.40],[45.88,11.43],[45.89,11.47],[45.905,11.50],[45.92,11.525],[45.935,11.545],[45.955,11.555],[45.975,11.555],[46.00,11.55],[46.015,11.56],[46.03,11.555],[46.055,11.555],[46.08,11.55],[46.12,11.55]];
+S.trent16b=[[45.85,10.86],[45.83,10.90],[45.84,10.96],[45.85,11.00],[45.838,11.0531],[45.7992,11.0689],[45.80,11.08],[45.7937,11.1764],[45.805,11.22],[45.81,11.26],[45.815,11.30],[45.8241,11.3473],[45.835,11.36],[45.85,11.38],[45.865,11.40],[45.88,11.43],[45.89,11.47],[45.899,11.4802],[45.9272,11.5121],[45.935,11.545],[45.955,11.555],[45.975,11.555],[46.0085,11.5228],[46.015,11.56],[46.03,11.555],[46.055,11.555],[46.08,11.55],[46.12,11.55]];
 
 // Nach der 6. Isonzoschlacht (Görz, August 1916)
-S.isonzo16=[[46.51,13.31],[46.47,13.36],[46.43,13.42],[46.40,13.46],[46.385,13.50],[46.375,13.535],[46.36,13.535],[46.335,13.545],[46.325,13.57],[46.31,13.60],[46.295,13.635],[46.285,13.655],[46.27,13.668],[46.255,13.68],[46.24,13.69],[46.22,13.70],[46.205,13.71],[46.19,13.715],[46.175,13.705],[46.165,13.705],[46.155,13.715],[46.15,13.73],[46.13,13.70],[46.11,13.67],[46.09,13.645],[46.075,13.60],[46.06,13.615],[46.045,13.625],[46.03,13.64],[46.015,13.655],[45.995,13.655],[45.98,13.66],[45.965,13.665],[45.955,13.67],[45.94,13.665],[45.925,13.66],[45.905,13.645],[45.89,13.63],[45.875,13.62],[45.86,13.61],[45.845,13.60],[45.83,13.59],[45.815,13.585],[45.80,13.58],[45.79,13.578]];
+S.isonzo16=[[46.51,13.31],[46.47,13.36],[46.43,13.42],[46.40,13.46],[46.385,13.50],[46.3665,13.5535],[46.36,13.535],[46.335,13.545],[46.325,13.57],[46.31,13.60],[46.295,13.635],[46.285,13.655],[46.2659,13.6582],[46.262,13.672],[46.255,13.68],[46.2194,13.6946],[46.22,13.70],[46.205,13.71],[46.19,13.715],[46.175,13.705],[46.165,13.705],[46.155,13.715],[46.15,13.73],[46.13,13.70],[46.11,13.67],[46.09,13.645],[46.075,13.60],[46.06,13.615],[46.045,13.625],[46.03,13.64],[46.015,13.655],[45.995,13.655],[45.98,13.66],[45.965,13.665],[45.955,13.67],[45.94,13.665],[45.925,13.66],[45.905,13.645],[45.89,13.63],[45.875,13.62],[45.86,13.61],[45.845,13.60],[45.83,13.59],[45.815,13.585],[45.80,13.58],[45.79,13.578]];
 // Nach der 10. Isonzoschlacht (Juni 1917)
-S.isonzo17a=[[46.51,13.31],[46.47,13.36],[46.43,13.42],[46.40,13.46],[46.385,13.50],[46.375,13.535],[46.36,13.535],[46.335,13.545],[46.325,13.57],[46.31,13.60],[46.295,13.635],[46.285,13.655],[46.27,13.668],[46.255,13.68],[46.24,13.69],[46.22,13.70],[46.205,13.71],[46.19,13.715],[46.175,13.705],[46.165,13.705],[46.155,13.715],[46.15,13.73],[46.13,13.70],[46.11,13.67],[46.09,13.645],[46.075,13.62],[46.06,13.64],[46.045,13.65],[46.025,13.66],[46.005,13.66],[45.98,13.66],[45.965,13.668],[45.955,13.672],[45.94,13.668],[45.925,13.665],[45.905,13.65],[45.89,13.65],[45.875,13.655],[45.86,13.65],[45.845,13.64],[45.83,13.632],[45.815,13.62],[45.80,13.61],[45.785,13.60]];
+S.isonzo17a=[[46.51,13.31],[46.47,13.36],[46.43,13.42],[46.40,13.46],[46.385,13.50],[46.3665,13.5535],[46.36,13.535],[46.335,13.545],[46.325,13.57],[46.31,13.60],[46.295,13.635],[46.285,13.655],[46.2659,13.6582],[46.262,13.672],[46.255,13.68],[46.2194,13.6946],[46.22,13.70],[46.205,13.71],[46.19,13.715],[46.175,13.705],[46.165,13.705],[46.155,13.715],[46.15,13.73],[46.13,13.70],[46.11,13.67],[46.09,13.645],[46.075,13.62],[46.06,13.64],[46.045,13.65],[46.025,13.66],[46.005,13.66],[45.98,13.66],[45.965,13.668],[45.955,13.672],[45.94,13.668],[45.925,13.665],[45.905,13.65],[45.89,13.65],[45.875,13.655],[45.86,13.65],[45.845,13.64],[45.83,13.632],[45.815,13.62],[45.7909,13.6208],[45.785,13.60]];
 // Nach der 11. Isonzoschlacht (Bainsizza, September 1917)
-S.isonzo17b=[[46.51,13.31],[46.47,13.36],[46.43,13.42],[46.40,13.46],[46.385,13.50],[46.375,13.535],[46.36,13.535],[46.335,13.545],[46.325,13.57],[46.31,13.60],[46.295,13.635],[46.285,13.655],[46.27,13.668],[46.255,13.68],[46.24,13.69],[46.22,13.70],[46.205,13.71],[46.19,13.715],[46.175,13.705],[46.165,13.705],[46.155,13.715],[46.15,13.73],[46.14,13.745],[46.13,13.76],[46.115,13.775],[46.10,13.78],[46.08,13.775],[46.06,13.77],[46.045,13.745],[46.03,13.72],[46.01,13.70],[45.995,13.685],[45.98,13.672],[45.965,13.668],[45.955,13.672],[45.94,13.668],[45.925,13.665],[45.905,13.65],[45.89,13.65],[45.875,13.655],[45.86,13.65],[45.845,13.64],[45.83,13.632],[45.815,13.62],[45.80,13.61],[45.785,13.60]];
+S.isonzo17b=[[46.51,13.31],[46.47,13.36],[46.43,13.42],[46.40,13.46],[46.385,13.50],[46.3665,13.5535],[46.36,13.535],[46.335,13.545],[46.325,13.57],[46.31,13.60],[46.295,13.635],[46.285,13.655],[46.2659,13.6582],[46.262,13.672],[46.255,13.68],[46.2194,13.6946],[46.22,13.70],[46.205,13.71],[46.19,13.715],[46.175,13.705],[46.165,13.705],[46.155,13.715],[46.15,13.73],[46.14,13.745],[46.13,13.76],[46.115,13.775],[46.10,13.78],[46.08,13.775],[46.06,13.77],[46.045,13.745],[46.03,13.72],[46.01,13.70],[45.995,13.685],[45.98,13.672],[45.965,13.668],[45.955,13.672],[45.94,13.668],[45.925,13.665],[45.905,13.65],[45.89,13.65],[45.875,13.655],[45.86,13.65],[45.845,13.64],[45.83,13.632],[45.815,13.62],[45.7909,13.6208],[45.785,13.60]];
 
 // Nach Karfreit: Hochfläche der Sieben Gemeinden, Grappa, Piave (Dez. 1917 – Okt. 1918)
 const PIAVE=[[45.891,11.962],[45.878,11.987],[45.864,12.026],[45.853,12.067],[45.848,12.095],[45.85,12.113],[45.857,12.13],[45.86,12.155],[45.851,12.193],[45.832,12.238],[45.788,12.318],[45.762,12.376],[45.731,12.418],[45.718,12.457],[45.708,12.48],[45.693,12.499],[45.658,12.524],[45.641,12.546],[45.621,12.589],[45.57,12.705],[45.54,12.741]];
-S.grappa=[[45.80,11.18],[45.81,11.25],[45.82,11.30],[45.85,11.37],[45.88,11.42],[45.87,11.48],[45.865,11.53],[45.855,11.58],[45.86,11.63],[45.865,11.68],[45.885,11.71],[45.89,11.74],[45.885,11.77],[45.895,11.81],[45.89,11.85],[45.875,11.88],[45.86,11.92],[45.875,11.95]].concat(PIAVE);
-S.trentW=[[45.85,10.86],[45.83,10.90],[45.84,10.96],[45.85,11.00],[45.85,11.04],[45.80,11.05],[45.80,11.08],[45.80,11.18]];
+S.grappa=[[45.7937,11.1764],[45.81,11.25],[45.8241,11.3473],[45.85,11.37],[45.88,11.42],[45.87,11.48],[45.865,11.53],[45.8605,11.5962],[45.8464,11.6398],[45.865,11.68],[45.885,11.71],[45.89,11.74],[45.8892,11.7737],[45.892,11.8129],[45.89,11.85],[45.8849,11.8901],[45.875,11.925],[45.875,11.95]].concat(PIAVE);
+S.trentW=[[45.85,10.86],[45.83,10.90],[45.84,10.96],[45.85,11.00],[45.838,11.0531],[45.7992,11.0689],[45.80,11.08],[45.7937,11.1764]];
 // Juni 1918: österreichisch-ungarische Brückenköpfe am Montello und am unteren Piave
 const PIAVE_JUNE=PIAVE.slice(0,7).concat([[45.84,12.13],[45.81,12.15],[45.795,12.19],[45.81,12.235]],PIAVE.slice(9,15),[[45.70,12.465],[45.665,12.46],[45.625,12.47],[45.585,12.52],[45.56,12.62],[45.545,12.70],[45.535,12.745]]);
 S.grappaJune=S.grappa.slice(0,18).concat(PIAVE_JUNE);
 // Waffenstillstand 4. November 1918: ungefähre Spitzen des italienischen Vormarsches
-S.armistice=[[46.535,10.452],[46.42,10.78],[46.30,11.02],[46.22,11.13],[46.25,11.40],[46.33,11.62],[46.47,11.88],[46.58,12.12],[46.64,12.38],[46.60,12.80],[46.52,13.10],[46.48,13.45],[46.33,13.58],[46.14,13.74],[45.95,13.80],[45.76,13.84],[45.62,13.78]];
+S.armistice=[[46.5337,10.4543],[46.42,10.78],[46.30,11.02],[46.22,11.13],[46.25,11.40],[46.33,11.62],[46.47,11.88],[46.58,12.12],[46.64,12.38],[46.60,12.80],[46.52,13.10],[46.48,13.45],[46.33,13.58],[46.14,13.74],[45.95,13.80],[45.76,13.84],[45.62,13.78]];
 
 /* ---------- Phasen ---------- */
 const PHASES=[
@@ -228,34 +228,34 @@ const PHASES=[
 
 /* ---------- Schlachten ---------- */
 const BATTLES=[
- {n:"1. Isonzoschlacht",p:[45.905,13.56],a:M(1915,6),b:M(1915,7),d:"23. Juni – 7. Juli 1915",t:"Erster italienischer Grossangriff gegen den Görzer Brückenkopf und den Karstrand bei San Michele. Kaum Geländegewinn."},
- {n:"2. Isonzoschlacht",p:[45.885,13.575],a:M(1915,7),b:M(1915,8),d:"18. Juli – 3. August 1915",t:"Schwere Kämpfe um den Monte San Michele, der mehrfach den Besitzer wechselt. Hohe Verluste auf beiden Seiten."},
+ {n:"1. Isonzoschlacht",p:[45.8873,13.5611],a:M(1915,6),b:M(1915,7),d:"23. Juni – 7. Juli 1915",t:"Erster italienischer Grossangriff gegen den Görzer Brückenkopf und den Karstrand bei San Michele. Kaum Geländegewinn."},
+ {n:"2. Isonzoschlacht",p:[45.882,13.572],a:M(1915,7),b:M(1915,8),d:"18. Juli – 3. August 1915",t:"Schwere Kämpfe um den Monte San Michele, der mehrfach den Besitzer wechselt. Hohe Verluste auf beiden Seiten."},
  {n:"3. Isonzoschlacht",p:[45.945,13.60],a:M(1915,10),b:M(1915,11),d:"18. Oktober – 4. November 1915",t:"Angriffe auf Podgora, Sabotino, Plava und den Karst. Görz wird beschossen, bleibt aber österreichisch."},
  {n:"4. Isonzoschlacht",p:[45.97,13.59],a:M(1915,11),b:M(1915,12),d:"10. November – 2. Dezember 1915",t:"Fortsetzung der Angriffe bei Oslavia und auf den Karst bis zur Erschöpfung beider Seiten im Winter."},
  {n:"5. Isonzoschlacht",p:[45.87,13.555],a:M(1916,3),b:M(1916,3),d:"9. – 17. März 1916",t:"Kurze Entlastungsoffensive auf Bitten Frankreichs wegen Verdun. Ohne Ergebnis."},
- {n:"6. Isonzoschlacht",p:[45.94,13.625],a:M(1916,8),b:M(1916,8),d:"6. – 17. August 1916",t:"Italien nimmt den Sabotino, die Podgora und am 9. August die Stadt Görz. Auf dem Karst fällt der San Michele, Österreich-Ungarn räumt die Hochfläche von Doberdò."},
+ {n:"6. Isonzoschlacht",p:[45.9887,13.6339],a:M(1916,8),b:M(1916,8),d:"6. – 17. August 1916",t:"Italien nimmt den Sabotino, die Podgora und am 9. August die Stadt Görz. Auf dem Karst fällt der San Michele, Österreich-Ungarn räumt die Hochfläche von Doberdò."},
  {n:"7. Isonzoschlacht",p:[45.865,13.62],a:M(1916,9),b:M(1916,9),d:"14. – 17. September 1916",t:"Kurzer Angriff auf dem Karst östlich von Doberdò."},
  {n:"8. Isonzoschlacht",p:[45.85,13.64],a:M(1916,10),b:M(1916,10),d:"10. – 12. Oktober 1916",t:"Weitere Angriffe auf dem Karst mit geringen Gewinnen."},
  {n:"9. Isonzoschlacht",p:[45.875,13.66],a:M(1916,11),b:M(1916,11),d:"1. – 4. November 1916",t:"Italien gewinnt auf dem Karst einige Kilometer bis vor Kostanjevica."},
- {n:"10. Isonzoschlacht",p:[46.045,13.635],a:M(1917,5),b:M(1917,6),d:"12. Mai – 8. Juni 1917",t:"Italien nimmt Kuk und Vodice nördlich von Görz und stösst auf dem Karst bis vor die Hermada vor."},
+ {n:"10. Isonzoschlacht",p:[46.0364,13.6503],a:M(1917,5),b:M(1917,6),d:"12. Mai – 8. Juni 1917",t:"Italien nimmt Kuk und Vodice nördlich von Görz und stösst auf dem Karst bis vor die Hermada vor."},
  {n:"11. Isonzoschlacht",p:[46.06,13.72],a:M(1917,8),b:M(1917,9),d:"17. August – 12. September 1917",t:"Grösste italienische Offensive am Isonzo. Die Hochfläche von Bainsizza und der Monte Santo fallen, der Monte San Gabriele hält."},
- {n:"12. Isonzoschlacht (Karfreit / Caporetto)",p:[46.245,13.58],a:M(1917,10),b:M(1917,11),d:"24. Oktober – November 1917",t:"Deutsche und österreichisch-ungarische Truppen brechen bei Flitsch und Tolmein mit Gas und Stosstrupps durch und nehmen Karfreit. Die italienische Armee weicht bis an den Piave zurück, über 250 000 Mann geraten in Gefangenschaft."},
- {n:"Krn (Monte Nero)",p:[46.268,13.66],a:M(1915,6),b:M(1915,6),d:"16. Juni 1915",t:"Alpini erstürmen den 2244 m hohen Krn in einem nächtlichen Überraschungsangriff."},
- {n:"Kämpfe am Plöckenpass",p:[46.60,12.95],a:M(1915,5),b:M(1917,10),d:"1915 – 1917",t:"Am Kleinen Pal und am Cellon liegen sich die Stellungen teils nur wenige Meter gegenüber. Bis Karfreit wird hier um jede Felsrippe gekämpft."},
- {n:"Gebirgskrieg am Ortler",p:[46.509,10.545],a:M(1915,5),b:M(1918,11),d:"1915 – 1918",t:"Die höchste Stellung des Krieges liegt auf dem Ortlergipfel (3905 m). Kälte, Lawinen und Höhe fordern mehr Opfer als die Kämpfe."},
- {n:"Col di Lana",p:[46.505,11.975],a:M(1915,7),b:M(1916,4),d:"Juli 1915 – April 1916",t:"Der «Blutberg». Nach monatelangen Angriffen sprengen italienische Mineure am 17. April 1916 den Gipfel und nehmen ihn ein."},
- {n:"Minenkrieg am Lagazuoi",p:[46.528,12.008],a:M(1915,7),b:M(1917,10),d:"1915 – 1917",t:"Beide Seiten treiben Stollen in den Fels und sprengen ganze Felsbänder. Die Stollen sind heute begehbar."},
- {n:"Monte Piana",p:[46.612,12.235],a:M(1915,6),b:M(1917,10),d:"1915 – 1917",t:"Das Hochplateau gegenüber den Drei Zinnen ist zweigeteilt. Die Gräben beider Seiten liegen nur wenige Dutzend Meter auseinander."},
- {n:"Gletscherkrieg am Adamello",p:[46.16,10.55],a:M(1916,4),b:M(1918,6),d:"1916 – 1918",t:"Kämpfe auf über 3000 m im Eis. Italienische Angriffe im April 1916 und 1918 erobern Teile des Gletschergebiets."},
- {n:"Punta San Matteo",p:[46.384,10.585],a:M(1918,8),b:M(1918,9),d:"13. August – 3. September 1918",t:"Auf 3678 m die höchstgelegene Schlacht des Krieges. Italien nimmt den Gipfel, Österreich-Ungarn erobert ihn drei Wochen später zurück."},
- {n:"Eisstadt in der Marmolada",p:[46.435,11.86],a:M(1916,5),b:M(1917,11),d:"1916 – 1917",t:"Österreichische Truppen graben rund 12 km Stollen in den Gletscher, mit Unterkünften und Magazinen im Eis."},
+ {n:"12. Isonzoschlacht (Karfreit / Caporetto)",p:[46.2467,13.5786],a:M(1917,10),b:M(1917,11),d:"24. Oktober – November 1917",t:"Deutsche und österreichisch-ungarische Truppen brechen bei Flitsch und Tolmein mit Gas und Stosstrupps durch und nehmen Karfreit. Die italienische Armee weicht bis an den Piave zurück, über 250 000 Mann geraten in Gefangenschaft."},
+ {n:"Krn (Monte Nero)",p:[46.2659,13.6582],a:M(1915,6),b:M(1915,6),d:"16. Juni 1915",t:"Alpini erstürmen den 2244 m hohen Krn in einem nächtlichen Überraschungsangriff."},
+ {n:"Kämpfe am Plöckenpass",p:[46.6055,12.9589],a:M(1915,5),b:M(1917,10),d:"1915 – 1917",t:"Am Kleinen Pal und am Cellon liegen sich die Stellungen teils nur wenige Meter gegenüber. Bis Karfreit wird hier um jede Felsrippe gekämpft."},
+ {n:"Gebirgskrieg am Ortler",p:[46.5087,10.5436],a:M(1915,5),b:M(1918,11),d:"1915 – 1918",t:"Die höchste Stellung des Krieges liegt auf dem Ortlergipfel (3905 m). Kälte, Lawinen und Höhe fordern mehr Opfer als die Kämpfe."},
+ {n:"Col di Lana",p:[46.4966,11.9595],a:M(1915,7),b:M(1916,4),d:"Juli 1915 – April 1916",t:"Der «Blutberg». Nach monatelangen Angriffen sprengen italienische Mineure am 17. April 1916 den Gipfel und nehmen ihn ein."},
+ {n:"Minenkrieg am Lagazuoi",p:[46.5295,12.0051],a:M(1915,7),b:M(1917,10),d:"1915 – 1917",t:"Beide Seiten treiben Stollen in den Fels und sprengen ganze Felsbänder. Die Stollen sind heute begehbar."},
+ {n:"Monte Piana",p:[46.6163,12.2437],a:M(1915,6),b:M(1917,10),d:"1915 – 1917",t:"Das Hochplateau gegenüber den Drei Zinnen ist zweigeteilt. Die Gräben beider Seiten liegen nur wenige Dutzend Meter auseinander."},
+ {n:"Gletscherkrieg am Adamello",p:[46.1555,10.4973],a:M(1916,4),b:M(1918,6),d:"1916 – 1918",t:"Kämpfe auf über 3000 m im Eis. Italienische Angriffe im April 1916 und 1918 erobern Teile des Gletschergebiets."},
+ {n:"Punta San Matteo",p:[46.3778,10.5676],a:M(1918,8),b:M(1918,9),d:"13. August – 3. September 1918",t:"Auf 3678 m die höchstgelegene Schlacht des Krieges. Italien nimmt den Gipfel, Österreich-Ungarn erobert ihn drei Wochen später zurück."},
+ {n:"Eisstadt in der Marmolada",p:[46.4356,11.8493],a:M(1916,5),b:M(1917,11),d:"1916 – 1917",t:"Österreichische Truppen graben rund 12 km Stollen in den Gletscher, mit Unterkünften und Magazinen im Eis."},
  {n:"Strafexpedition (Südtiroloffensive)",p:[45.875,11.51],a:M(1916,5),b:M(1916,6),d:"15. Mai – Juni 1916",t:"Conrad von Hötzendorfs Offensive aus dem Trentino nimmt Asiago und Arsiero. Der Durchbruch in die Ebene gelingt nicht."},
- {n:"Pasubio",p:[45.795,11.18],a:M(1916,5),b:M(1918,3),d:"1916 – 1918",t:"Italien hält den Gipfel gegen alle Angriffe. Am 13. März 1918 zerstört die grösste Sprengung des Gebirgskriegs den italienischen Zahn."},
- {n:"Sprengung am Monte Cimone",p:[45.82,11.345],a:M(1916,9),b:M(1916,9),d:"23. September 1916",t:"Österreichische Mineure sprengen die italienische Gipfelstellung über Arsiero."},
- {n:"Schlacht am Ortigara",p:[46.01,11.545],a:M(1917,6),b:M(1917,6),d:"10. – 29. Juni 1917",t:"Alpini erobern den Gipfel und verlieren ihn wenige Tage später wieder. Etwa 25 000 Italiener fallen oder werden verwundet."},
- {n:"Abwehrschlacht am Monte Grappa",p:[45.875,11.80],a:M(1917,11),b:M(1917,12),d:"November – Dezember 1917",t:"Nach Karfreit hält Italien den Grappa als Eckpfeiler zwischen Hochfläche und Piave."},
+ {n:"Pasubio",p:[45.7937,11.1764],a:M(1916,5),b:M(1918,3),d:"1916 – 1918",t:"Italien hält den Gipfel gegen alle Angriffe. Am 13. März 1918 zerstört die grösste Sprengung des Gebirgskriegs den italienischen Zahn."},
+ {n:"Sprengung am Monte Cimone",p:[45.8241,11.3473],a:M(1916,9),b:M(1916,9),d:"23. September 1916",t:"Österreichische Mineure sprengen die italienische Gipfelstellung über Arsiero."},
+ {n:"Schlacht am Ortigara",p:[46.0085,11.5228],a:M(1917,6),b:M(1917,6),d:"10. – 29. Juni 1917",t:"Alpini erobern den Gipfel und verlieren ihn wenige Tage später wieder. Etwa 25 000 Italiener fallen oder werden verwundet."},
+ {n:"Abwehrschlacht am Monte Grappa",p:[45.8732,11.7995],a:M(1917,11),b:M(1917,12),d:"November – Dezember 1917",t:"Nach Karfreit hält Italien den Grappa als Eckpfeiler zwischen Hochfläche und Piave."},
  {n:"Erste Piaveschlacht",p:[45.66,12.52],a:M(1917,11),b:M(1917,12),d:"November – Dezember 1917",t:"Österreichisch-ungarische Übergänge am unteren Piave werden abgewiesen. Die neue Front hält."},
- {n:"Schlacht der drei Berge",p:[45.86,11.635],a:M(1918,1),b:M(1918,1),d:"28. – 31. Januar 1918",t:"Italien nimmt Col del Rosso, Col d'Echele und Monte Valbella zurück."},
+ {n:"Schlacht der drei Berge",p:[45.8464,11.6398],a:M(1918,1),b:M(1918,1),d:"28. – 31. Januar 1918",t:"Italien nimmt Col del Rosso, Col d'Echele und Monte Valbella zurück."},
  {n:"Zweite Piaveschlacht",p:[45.815,12.17],a:M(1918,6),b:M(1918,6),d:"15. – 23. Juni 1918",t:"Letzte Offensive Österreich-Ungarns am Montello, am unteren Piave und auf dem Grappa. Sie scheitert mit weit über 100 000 Mann Verlusten."},
  {n:"Vittorio Veneto",p:[45.99,12.30],a:M(1918,10),b:M(1918,11),d:"24. Oktober – 4. November 1918",t:"Italienische und alliierte Truppen überqueren den Piave. Die österreichisch-ungarische Armee zerfällt, der Waffenstillstand von Villa Giusti beendet den Krieg an dieser Front."}
 ];
@@ -263,38 +263,38 @@ const BATTLES=[
 /* ---------- Werke und Forti ---------- */
 const FORTS=[
  {n:"Werk Gomagoi",p:[46.577,10.538],s:"kuk",d:"Talsperre an der Stilfserjochstrasse, um 1860."},
- {n:"Werk Strino",p:[46.278,10.645],s:"kuk",d:"Sperre am Tonalepass, 1860–61."},
- {n:"Werke Mero und Pozzi Alti",p:[46.268,10.672],s:"kuk",d:"Modernere Tonalesperre, um 1910."},
+ {n:"Werk Strino",p:[46.2794,10.6431],s:"kuk",d:"Sperre am Tonalepass, 1860–61."},
+ {n:"Werke Mero und Pozzi Alti",p:[46.272,10.612],s:"kuk",d:"Modernere Tonalesperre, um 1910."},
  {n:"Sperre Lardaro",p:[46.04,10.665],s:"kuk",d:"Vier Werke in den Judikarien sperren das Chiesetal."},
  {n:"Werk Garda",p:[45.872,10.856],s:"kuk",d:"Teil der Festung Riva am Nordende des Gardasees, 1904–07."},
  {n:"Monte Brione",p:[45.885,10.873],s:"kuk",d:"Batterien der Festung Riva auf dem Rücken zwischen Riva und Torbole."},
- {n:"Werk Pozzacchio",p:[45.853,11.122],s:"kuk",d:"In den Fels gehauenes Werk im Vallarsa, bei Kriegsbeginn unfertig."},
- {n:"Werk Serrada",p:[45.888,11.158],s:"kuk",d:"Westlichstes Werk der Hochflächen von Folgaria und Lavarone."},
+ {n:"Werk Valmorbia (Pozzacchio)",p:[45.8261,11.0886],s:"kuk",d:"In den Fels gehauenes Werk im Vallarsa, bei Kriegsbeginn unfertig."},
+ {n:"Werk Serrada",p:[45.8786,11.1886],s:"kuk",d:"Westlichstes Werk der Hochflächen von Folgaria und Lavarone."},
  {n:"Werk Sommo Alto",p:[45.902,11.205],s:"kuk",d:"Panzerwerk über Folgaria."},
- {n:"Werk Cherle",p:[45.918,11.255],s:"kuk",d:"Werk San Sebastiano auf der Hochfläche von Folgaria."},
- {n:"Werk Gschwent (Belvedere)",p:[45.935,11.288],s:"kuk",d:"Werk bei Lavarone, heute Museum."},
- {n:"Werk Lusern",p:[45.954,11.33],s:"kuk",d:"Wird im Mai 1915 schwer beschossen und hält."},
- {n:"Werk Verle",p:[45.963,11.378],s:"kuk",d:"Werk Busa Verle an der Vezzena."},
- {n:"Werk Spitz Verle",p:[45.975,11.392],s:"kuk",d:"Beobachtungswerk auf dem Pizzo di Levico."},
- {n:"Werk Tenna",p:[46.016,11.265],s:"kuk",d:"Sperrt mit Colle delle Benne den Eingang der Valsugana."},
+ {n:"Werk Sebastiano (Cherle)",p:[45.9153,11.2289],s:"kuk",d:"Werk San Sebastiano auf der Hochfläche von Folgaria."},
+ {n:"Werk Gschwent (Belvedere)",p:[45.9225,11.2875],s:"kuk",d:"Werk bei Lavarone, heute Museum."},
+ {n:"Werk Lusern",p:[45.9267,11.3364],s:"kuk",d:"Wird im Mai 1915 schwer beschossen und hält."},
+ {n:"Werk Verle",p:[45.9647,11.3325],s:"kuk",d:"Werk Busa Verle an der Vezzena."},
+ {n:"Werk Spitz Verle",p:[45.9806,11.3611],s:"kuk",d:"Beobachtungswerk auf dem Pizzo di Levico."},
+ {n:"Werk Tenna",p:[46.0097,11.2703],s:"kuk",d:"Sperrt mit Colle delle Benne den Eingang der Valsugana."},
  {n:"Werk Tre Sassi",p:[46.532,11.998],s:"kuk",d:"Sperre am Valparolapass, heute Museum."},
- {n:"Werk Plätzwiese",p:[46.648,12.17],s:"kuk",d:"Sperre über dem Höhlensteintal."},
+ {n:"Werk Plätzwiese",p:[46.6417,12.1953],s:"kuk",d:"Sperre über dem Höhlensteintal."},
  {n:"Werk Landro",p:[46.638,12.235],s:"kuk",d:"Sperre im Höhlensteintal bei Landro."},
  {n:"Werk Mitterberg",p:[46.70,12.355],s:"kuk",d:"Sperre im Sextental."},
  {n:"Werk Hensel",p:[46.51,13.44],s:"kuk",d:"Sperre Malborghetto im Kanaltal."},
  {n:"Werk Predil",p:[46.42,13.565],s:"kuk",d:"Sperre am Predilpass."},
- {n:"Flitscher Klause und Werk Hermann",p:[46.337,13.525],s:"kuk",d:"Sperre des Koritnicatals bei Flitsch."},
+ {n:"Flitscher Klause und Werk Hermann",p:[46.3393,13.5915],s:"kuk",d:"Sperre des Koritnicatals bei Flitsch."},
  {n:"Forte Venini",p:[46.465,10.355],s:"ita",d:"Forte di Oga über Bormio, Artilleriewerk gegen das Stilfserjoch."},
- {n:"Forte Verena",p:[45.937,11.407],s:"ita",d:"Feuert am 24. Mai 1915 den ersten italienischen Schuss des Krieges."},
- {n:"Forte Campolongo",p:[45.945,11.43],s:"ita",d:"Gegenüber den österreichischen Werken der Vezzena."},
+ {n:"Forte Verena",p:[45.9307,11.4143],s:"ita",d:"Feuert am 24. Mai 1915 den ersten italienischen Schuss des Krieges."},
+ {n:"Forte Campolongo",p:[45.925,11.4338],s:"ita",d:"Gegenüber den österreichischen Werken der Vezzena."},
  {n:"Forte Corbin",p:[45.861,11.42],s:"ita",d:"Über dem Astachtal, 1916 von Österreich-Ungarn erobert."},
  {n:"Forte Casa Ratti",p:[45.865,11.365],s:"ita",d:"Sperrt das Astachtal bei Pedescala."},
- {n:"Forte Interrotto",p:[45.89,11.49],s:"ita",d:"Auf dem Monte Interrotto nördlich von Asiago."},
- {n:"Forte Lisser",p:[45.92,11.60],s:"ita",d:"Auf der Hochfläche der Sieben Gemeinden über der Valsugana."},
+ {n:"Forte Interrotto",p:[45.899,11.4802],s:"ita",d:"Auf dem Monte Interrotto nördlich von Asiago."},
+ {n:"Forte Lisser",p:[45.9262,11.6186],s:"ita",d:"Auf der Hochfläche der Sieben Gemeinden über der Valsugana."},
  {n:"Forte Leone",p:[45.985,11.75],s:"ita",d:"Forte Cima Campo über dem Brentatal."},
  {n:"Forte Tombion",p:[45.955,11.685],s:"ita",d:"Im Fels über der Brenta bei Cismon."},
- {n:"Forte Monte Ricco",p:[46.433,12.37],s:"ita",d:"Bei Pieve di Cadore."},
- {n:"Forte Monte Festa",p:[46.316,13.05],s:"ita",d:"Sperrt das Tagliamentotal und ergibt sich im November 1917 nach dem Rückzug."},
+ {n:"Forte Monte Ricco",p:[46.4266,12.377],s:"ita",d:"Bei Pieve di Cadore."},
+ {n:"Forte Monte Festa",p:[46.3027,13.0835],s:"ita",d:"Sperrt das Tagliamentotal und ergibt sich im November 1917 nach dem Rückzug."},
  {n:"Forte Osoppo",p:[46.257,13.08],s:"ita",d:"Alte Festung am Tagliamento."}
 ];
 
@@ -402,15 +402,22 @@ LABELS.filter(l=>l[0]==="region").forEach(([k,t,la,lo,minor])=>{
   if(minor)m.getElement().classList.add("minor");
 });
 
+// Eigene Popup-Steuerung: MapLibre sperrt Klicks auf Marker, die es im 3D-Relief für verdeckt hält
+let openPop=null;
+function bindPop(m,el,pop){
+  const show=()=>{if(openPop&&openPop!==pop)openPop.remove();if(pop.isOpen()){pop.remove();return;}pop.setLngLat(m.getLngLat()).addTo(map);openPop=pop;};
+  el.addEventListener("click",e=>{e.stopPropagation();show();});
+  el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show();}});
+  m.setOpacity("1","0.75");
+}
 /* Festungen */
 const fortMarkers={kuk:[],ita:[]};
 FORTS.forEach(f=>{
   const c=f.s==="kuk"?"#b8860b":"#2e6a4c",side=f.s==="kuk"?"Österreich-Ungarn":"Italien";
   const el=document.createElement("div");el.className="mk fort";el.tabIndex=0;el.setAttribute("role","button");el.setAttribute("aria-label",f.n);
   el.innerHTML=`<svg width="18" height="18" viewBox="-9 -9 18 18"><rect x="-5" y="-5" width="10" height="10" transform="rotate(45)" fill="${c}" stroke="#2c2721" stroke-width="1.2"/><circle r="1.6" fill="#fff"/></svg>`;
-  const m=new maplibregl.Marker({element:el}).setLngLat([f.p[1],f.p[0]])
-    .setPopup(new maplibregl.Popup({offset:12,maxWidth:"300px"}).setHTML(`<div class="pp-kind">Festungswerk</div><div class="pp-title">${f.n}</div><div class="pp-date ${f.s}">${side}</div>${f.d}`)).addTo(map);
-  el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();m.togglePopup();}});
+  const m=new maplibregl.Marker({element:el}).setLngLat([f.p[1],f.p[0]]).addTo(map);
+  bindPop(m,el,new maplibregl.Popup({offset:12,maxWidth:"300px"}).setHTML(`<div class="pp-kind">Festungswerk</div><div class="pp-title">${f.n}</div><div class="pp-date ${f.s}">${side}</div>${f.d}`));
   fortMarkers[f.s].push(m);
 });
 
@@ -421,10 +428,9 @@ function battleSVG(past){
 }
 const bMarkers=BATTLES.map(b=>{
   const el=document.createElement("div");el.className="mk battle";el.hidden=true;el.tabIndex=0;el.setAttribute("role","button");el.setAttribute("aria-label",b.n);
-  const m=new maplibregl.Marker({element:el}).setLngLat([b.p[1],b.p[0]])
-    .setPopup(new maplibregl.Popup({offset:14,maxWidth:"300px"}).setHTML(`<div class="pp-kind">Schlacht</div><div class="pp-title">${b.n}</div><div class="pp-date">${b.d}</div>${b.t}`)).addTo(map);
-  el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();m.togglePopup();}});
-  m.setOpacity&&m.setOpacity("1","0.6");m._state=null;return m;
+  const m=new maplibregl.Marker({element:el}).setLngLat([b.p[1],b.p[0]]).addTo(map);
+  bindPop(m,el,new maplibregl.Popup({offset:14,maxWidth:"300px"}).setHTML(`<div class="pp-kind">Schlacht</div><div class="pp-title">${b.n}</div><div class="pp-date">${b.d}</div>${b.t}`));
+  m._state=null;return m;
 });
 let showBattles=true;
 
