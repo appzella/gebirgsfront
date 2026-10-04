@@ -42,9 +42,9 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .note{font-size:12px;line-height:1.4;color:var(--ink-soft);margin:10px 0 0;border-top:1px solid var(--rule);padding-top:8px}
 .toggle-cart{display:none}
 
-.timebar{position:absolute;z-index:5;left:12px;right:12px;bottom:calc(26px + env(safe-area-inset-bottom,0px));
+.timebar{position:absolute;z-index:5;left:calc(12px + env(safe-area-inset-left,0px));right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(26px + env(safe-area-inset-bottom,0px));
   background:rgba(252,251,248,.96);border:1px solid var(--ink);box-shadow:0 2px 14px rgba(44,39,33,.18);
-  display:grid;grid-template-columns:auto 1fr;gap:6px 16px;padding:10px 16px 12px;align-items:center}
+  display:grid;grid-template-columns:auto 1fr;gap:6px 18px;padding:10px 22px 12px 16px;align-items:center}
 .datebox{display:flex;align-items:center;gap:12px}
 #play{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--ink);background:var(--paper-2);color:var(--ink);cursor:pointer;display:grid;place-items:center;flex:none}
 #play:hover{background:var(--paper-3)}
@@ -59,6 +59,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .ticks{position:relative;height:16px;font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
 .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}
 .ticks span::before{content:"";position:absolute;left:50%;top:-9px;height:6px;border-left:1px solid var(--ink)}
+.ticks span.first{transform:translateX(-9px)}.ticks span.first::before{left:9px}
+.ticks span.last{transform:translateX(calc(-100% + 9px))}.ticks span.last::before{left:auto;right:9px}
 .bticks{position:absolute;left:0;right:0;top:4px;height:8px;pointer-events:none}
 .bticks i{position:absolute;width:2px;height:7px;background:var(--front);transform:translateX(-1px);opacity:.75}
 .phase{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:2px 14px;align-items:baseline;border-top:1px solid var(--rule);padding-top:7px;min-width:0}
@@ -104,7 +106,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
   .cartouche.collapsed .legend,.cartouche.collapsed .note,.cartouche.collapsed .hint3d{display:none}
   .cartouche.collapsed .viewsw{margin-bottom:0}
   .toggle-cart{display:inline-block;margin-top:8px;font:inherit;font-size:12.5px;background:none;border:0;padding:0;color:var(--front);text-decoration:underline;cursor:pointer}
-  .timebar{left:8px;right:8px;bottom:calc(24px + env(safe-area-inset-bottom,0px));padding:8px 12px 10px;grid-template-columns:1fr}
+  .timebar{left:calc(8px + env(safe-area-inset-left,0px));right:calc(8px + env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px));padding:8px 18px 10px 14px;grid-template-columns:1fr}
   #date{font-size:23px}
   #play{width:36px;height:36px}
   #phaseText{font-size:12.5px;max-height:5.6em;overflow:auto}
@@ -439,7 +441,7 @@ const slider=document.getElementById("slider"),dateEl=document.getElementById("d
 const ticks=document.getElementById("ticks"),bt=document.getElementById("bticks");
 const pos=i=>`calc(9px + (100% - 18px) * ${i/42})`;
 [["1915",0],["1916",8],["1917",20],["1918",32],["Nov. 1918",42]].forEach(([t,i],k)=>{
-  const s=document.createElement("span");s.textContent=t;s.style.left=pos(i);if(k===4)s.className="odd";ticks.appendChild(s);
+  const s=document.createElement("span");s.textContent=t;s.style.left=pos(i);s.className=k===0?"first":k===4?"last odd":"";ticks.appendChild(s);
 });
 [...new Set(BATTLES.map(b=>b.a))].forEach(i=>{const e=document.createElement("i");e.style.left=pos(i);bt.appendChild(e);});
 
