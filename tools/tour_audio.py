@@ -1,6 +1,9 @@
 """Erzeugt die Sprecherdateien der geführten Touren (audio/<tour>-0.mp3 Vorspann, audio/<tour>-<n>.mp3 Kapitel).
 
-Zwei Stimmen-Quellen:
+Drei Stimmen-Quellen:
+  Gemini (Google AI Studio), Schlüssel als GEMINI_API_KEY oder als Zugangsdaten der Umgebung (Header x-goog-api-key):
+    python3 tools/tour_audio.py gemini --sample Charon,Gacrux,Iapetus   # Hörprobe je Stimme nach audio-samples/
+    python3 tools/tour_audio.py gemini --voice Charon                   # alle Tondateien erzeugen
   ElevenLabs (Standard für die Website), braucht die Umgebungsvariable ELEVENLABS_API_KEY:
     python3 tools/tour_audio.py elevenlabs --library            # deutsche Erzählstimmen aus der Stimmenbibliothek auflisten
     python3 tools/tour_audio.py elevenlabs --sample ID1,ID2     # Hörprobe je Stimme nach audio-samples/
@@ -9,14 +12,14 @@ Zwei Stimmen-Quellen:
     python3 tools/tour_audio.py piper --model pfad/zu/de_DE-thorsten-high.onnx
 Benötigt: ffmpeg, node (zum Einlesen von data/tours.js); für Piper zusätzlich pip install piper-tts.
 """
-import argparse, json, os, re, subprocess, sys, tempfile, urllib.parse, urllib.request
+import argparse, base64, json, os, re, subprocess, sys, tempfile, time, urllib.error, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ap = argparse.ArgumentParser()
-ap.add_argument("engine", choices=["elevenlabs", "piper"])
+ap.add_argument("engine", choices=["gemini", "elevenlabs", "piper"])
 ap.add_argument("--model", default="de_DE-thorsten-high.onnx", help="Piper-Stimmenmodell")
-ap.add_argument("--voice", help="ElevenLabs voice_id")
-ap.add_argument("--sample", help="ElevenLabs: kommagetrennte voice_ids für Hörproben")
+ap.add_argument("--voice", help="ElevenLabs voice_id oder Gemini-Stimme (z.B. Charon)")
+ap.add_argument("--sample", help="kommagetrennte Stimmen für Hörproben")
 ap.add_argument("--library", action="store_true", help="ElevenLabs: deutsche Erzählstimmen auflisten")
 ap.add_argument("--only", help="nur diese Dateien, z.B. eis-1,eis-2")
 args = ap.parse_args()
@@ -81,6 +84,40 @@ def eleven(text, mp3, voice, prev=None, nxt=None):
         raw.write(audio); raw.flush()
         finish(raw.name, mp3)
 
+GEMINI = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-tts-preview:generateContent"
+# Regieanweisung vor dem Doppelpunkt, wie von Google für Sprachstil empfohlen; sie wird nicht mitgelesen
+STYLE = "Say in a calm, serious, measured voice, like the German narrator of a historical documentary: "
+
+def gemini(text, mp3, voice, **_):
+    body = {"contents": [{"parts": [{"text": STYLE + text}]}],
+            "generationConfig": {"responseModalities": ["AUDIO"],
+                                 "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}}}}
+    headers = {"Content-Type": "application/json"}
+    if os.environ.get("GEMINI_API_KEY"):
+        headers["x-goog-api-key"] = os.environ["GEMINI_API_KEY"]
+    for wait in (20, 40, 60, 90, 0):
+        try:
+            req = urllib.request.Request(GEMINI, data=json.dumps(body).encode(), headers=headers)
+            with urllib.request.urlopen(req, timeout=300) as r:
+                part = json.load(r)["candidates"][0]["content"]["parts"][0]["inlineData"]
+            break
+        except urllib.error.HTTPError as e:
+            if e.code not in (429, 500, 503) or not wait:
+                sys.exit(f"Gemini {e.code}: {e.read()[:300]}")
+            time.sleep(wait)
+    pcm = base64.b64decode(part["data"])
+    rate = re.search(r"rate=(\d+)", part["mimeType"])
+    with tempfile.TemporaryDirectory() as d:
+        src = os.path.join(d, "in")
+        open(src, "wb").write(pcm)
+        if "wav" in part["mimeType"]:
+            finish(src, mp3)
+        else:  # rohes 16-bit-PCM
+            wav = os.path.join(d, "in.wav")
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "s16le", "-ar", rate.group(1) if rate else "24000",
+                            "-ac", "1", "-i", src, wav], check=True)
+            finish(wav, mp3)
+
 def scenes():
     for t in tours:
         texts = [(f"{t['id']}-0", spoken(t["t"] + ". " + t["i"]["x"]))]
@@ -95,14 +132,15 @@ if args.engine == "elevenlabs" and args.library:
     for v in json.loads(xi("/v1/voices"))["voices"]:
         print("eigene:", v["voice_id"], v["name"], v.get("labels"))
     sys.exit()
-if args.engine == "elevenlabs" and args.sample:
+speak = {"gemini": gemini, "elevenlabs": eleven}.get(args.engine)
+if args.sample:
     os.makedirs(os.path.join(ROOT, "audio-samples"), exist_ok=True)
     name, text, prev, nxt = next(s for s in scenes() if s[0] == "eis-1")
     for v in args.sample.split(","):
-        eleven(text, os.path.join(ROOT, "audio-samples", f"{v}.mp3"), v)
+        speak(text, os.path.join(ROOT, "audio-samples", f"{v}.mp3"), v)
         print("audio-samples/" + v + ".mp3")
     sys.exit()
-if args.engine == "elevenlabs" and not args.voice:
+if args.engine != "piper" and not args.voice:
     sys.exit("--voice fehlt (Stimmen mit --library suchen)")
 
 only = set(args.only.split(",")) if args.only else None
@@ -113,5 +151,5 @@ for name, text, prev, nxt in scenes():
     if args.engine == "piper":
         piper(text, mp3)
     else:
-        eleven(text, mp3, args.voice, prev, nxt)
+        speak(text, mp3, args.voice, prev=prev, nxt=nxt)
     print(mp3)
