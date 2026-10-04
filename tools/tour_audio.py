@@ -1,10 +1,10 @@
 """Erzeugt die Sprecherdateien der geführten Touren (audio/<tour>-0.mp3 Vorspann, audio/<tour>-<n>.mp3 Kapitel).
 
-Drei Stimmen-Quellen:
+Drei Stimmen-Quellen (die Website nutzt Gemini, Stimme Iapetus):
   Gemini (Google AI Studio), Schlüssel als GEMINI_API_KEY oder als Zugangsdaten der Umgebung (Header x-goog-api-key):
     python3 tools/tour_audio.py gemini --sample Charon,Gacrux,Iapetus   # Hörprobe je Stimme nach audio-samples/
     python3 tools/tour_audio.py gemini --voice Charon                   # alle Tondateien erzeugen
-  ElevenLabs (Standard für die Website), braucht die Umgebungsvariable ELEVENLABS_API_KEY:
+  ElevenLabs, braucht die Umgebungsvariable ELEVENLABS_API_KEY:
     python3 tools/tour_audio.py elevenlabs --library            # deutsche Erzählstimmen aus der Stimmenbibliothek auflisten
     python3 tools/tour_audio.py elevenlabs --sample ID1,ID2     # Hörprobe je Stimme nach audio-samples/
     python3 tools/tour_audio.py elevenlabs --voice ID           # alle Tondateien erzeugen
