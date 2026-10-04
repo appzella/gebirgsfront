@@ -25,7 +25,7 @@ def slug(f):
     base = re.sub(r"[^a-z0-9]+", "-", base.lower()).strip("-")[:40].strip("-")
     return f"{base}-{hashlib.sha1(f.encode()).hexdigest()[:6]}"
 
-def get(url, tries=8):
+def get(url, tries=6):
     for n in range(tries):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
@@ -35,31 +35,30 @@ def get(url, tries=8):
                 raise
             time.sleep(min(120, int(e.headers.get("Retry-After") or 0) or 15 * (n + 1)))
 
-def thumb_urls(names):
-    """Commons-API: URL eines vorgerenderten Vorschaubilds mit 1280 px Breite je Datei."""
-    urls = {}
-    for i in range(0, len(names), 40):
-        q = urllib.parse.urlencode({"action": "query", "format": "json", "prop": "imageinfo", "iiprop": "url",
-                                    "iiurlwidth": 1280, "titles": "|".join("File:" + n for n in names[i:i + 40])})
-        d = json.loads(get("https://commons.wikimedia.org/w/api.php?" + q))
-        norm = {x["to"]: x["from"] for x in d["query"].get("normalized", [])}
-        for p in d["query"]["pages"].values():
-            if "imageinfo" in p:
-                ii = p["imageinfo"][0]
-                urls[norm.get(p["title"], p["title"])[5:]] = ii.get("thumburl") or ii["url"]
-        time.sleep(2)
-    return urls
+def commons_urls(name):
+    """Vorschaubild mit 960 px Breite direkt auf upload.wikimedia.org (Pfad aus dem MD5 des Dateinamens),
+    ohne die oft gedrosselte Commons-API; ist das Original schmaler, das Original selbst."""
+    n = name.replace(" ", "_")
+    h = hashlib.md5(n.encode()).hexdigest()
+    q = urllib.parse.quote(n)
+    return (f"https://upload.wikimedia.org/wikipedia/commons/thumb/{h[0]}/{h[:2]}/{q}/960px-{q}",
+            f"https://upload.wikimedia.org/wikipedia/commons/{h[0]}/{h[:2]}/{q}")
 
 os.makedirs(OUT, exist_ok=True)
 names = {f: slug(f) for f in files}
 todo = [f for f, s in names.items() if not all(os.path.exists(os.path.join(OUT, f"{s}-{w}.webp")) for w in SIZES)]
 print(len(files), "Bilder,", len(todo), "fehlen")
-urls = thumb_urls(todo) if todo else {}
 missing = []
 for f in todo:
-    if f not in urls:
-        missing.append(f); continue
-    im = Image.open(io.BytesIO(get(urls[f])))
+    thumb, orig = commons_urls(f)
+    try:
+        data = get(thumb)
+    except urllib.error.HTTPError:
+        try:
+            data = get(orig)
+        except urllib.error.HTTPError:
+            missing.append(f); continue
+    im = Image.open(io.BytesIO(data))
     im = im.convert("RGB")
     for w in SIZES:
         x = im if im.width <= w else im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)
