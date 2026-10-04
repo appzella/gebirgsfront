@@ -219,7 +219,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 </section>
 
 <section class="tourbox" id="tourBox" hidden aria-live="polite">
-  <div class="tb-head"><span class="tb-name" id="tbName"></span><span class="tb-act"><button type="button" class="tb-say" id="tbSay" aria-pressed="false" title="Texte vorlesen und automatisch weiterblättern"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6H5L9 2.5V13.5L5 10H2Z" fill="currentColor"/><path class="w" d="M11 5.2Q12.6 8 11 10.8M12.8 3.6Q15.4 8 12.8 12.4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>Vorlesen</button><button type="button" class="tb-x" id="tbClose" aria-label="Tour beenden">×</button></span></div>
+  <div class="tb-head"><span class="tb-name" id="tbName"></span><span class="tb-act"><button type="button" class="tb-say" id="tbSay" aria-pressed="false" title="Sprecher einschalten und automatisch weiterblättern"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6H5L9 2.5V13.5L5 10H2Z" fill="currentColor"/><path class="w" d="M11 5.2Q12.6 8 11 10.8M12.8 3.6Q15.4 8 12.8 12.4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>Vorlesen</button><button type="button" class="tb-x" id="tbClose" aria-label="Tour beenden">×</button></span></div>
   <h2 id="tbTitle"></h2>
   <p id="tbText"></p>
   <div class="tb-nav"><button type="button" id="tbPrev">‹ Zurück</button><span id="tbCount"></span><button type="button" id="tbNext">Weiter ›</button></div>
@@ -713,28 +713,18 @@ function showStep(){
   map.flyTo({center:s.c,zoom:narrow?s.z-0.7:s.z,pitch:s.p||0,bearing:s.b||0,padding:pad,duration:2800,essential:true});
   say();
 }
-// Vorlesen mit der Sprachausgabe des Browsers; nach jedem Schritt geht es automatisch weiter
-const SY=window.speechSynthesis,tbSay=document.getElementById("tbSay");
-let sayOn=false,sayGen=0,advT=null,voice=null;
+// Sprecher: fertige Tondateien je Tourschritt (audio/<tour>-<schritt>.mp3), danach geht es automatisch weiter
+const tbSay=document.getElementById("tbSay"),au=new Audio();au.preload="auto";
+let sayOn=false,sayGen=0,advT=null;
 try{sayOn=localStorage.getItem("gf-say")==="1";}catch(e){}
-function pickVoice(){
-  const v=SY.getVoices().filter(x=>/^de/i.test(x.lang));
-  voice=v.find(x=>/de.CH/i.test(x.lang))||v.find(x=>/de.DE/i.test(x.lang)&&x.localService)||v.find(x=>/de.DE/i.test(x.lang))||v[0]||null;
-}
-if(SY&&window.SpeechSynthesisUtterance){pickVoice();SY.addEventListener?SY.addEventListener("voiceschanged",pickVoice):(SY.onvoiceschanged=pickVoice);}
-else{tbSay.hidden=true;sayOn=false;}
 tbSay.setAttribute("aria-pressed",String(sayOn));
-function hush(){sayGen++;clearTimeout(advT);if(SY)SY.cancel();}
+function hush(){sayGen++;clearTimeout(advT);au.pause();}
 function say(){
   hush();if(!sayOn||!tour)return;
-  const g=sayGen,s=tour.steps[tstep];
-  // in Sätze teilen (Chrome bricht lange Äusserungen ab), aber nicht nach Ordinalzahlen oder k.u.k.
-  const parts=(s.h+". "+s.x).split(/(?<=(?<!\d|k\.u\.k)[.!?])\s+/).filter(Boolean);
-  parts.forEach((t,i)=>{
-    const u=new SpeechSynthesisUtterance(t);u.lang=voice?voice.lang:"de-DE";if(voice)u.voice=voice;u.rate=.95;
-    if(i===parts.length-1)u.onend=()=>{if(g!==sayGen||!tour||tstep>=tour.steps.length-1)return;advT=setTimeout(()=>{if(g===sayGen&&tour){tstep++;showStep();}},1800);};
-    SY.speak(u);
-  });
+  const g=sayGen;
+  au.src=`audio/${tour.id}-${tstep+1}.mp3`;
+  au.onended=()=>{if(g!==sayGen||!tour||tstep>=tour.steps.length-1)return;advT=setTimeout(()=>{if(g===sayGen&&tour){tstep++;showStep();}},1500);};
+  au.play().catch(()=>{});
 }
 tbSay.addEventListener("click",()=>{
   sayOn=!sayOn;tbSay.setAttribute("aria-pressed",String(sayOn));
