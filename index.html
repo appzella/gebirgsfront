@@ -237,10 +237,22 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
     padding:14px 52px 16px calc(14px + env(safe-area-inset-left,0px));border-left:0;border-right:0;box-shadow:0 -5px 24px rgba(44,39,33,.3)}
   .maplibregl-popup-close-button{font-size:26px;width:44px;height:44px}
   .front-pop{display:none}
+  /* Aufgeklappt wird die Kartusche zum Seitenmenü von links; der Rest der Karte ist abgedunkelt */
+  .cartouche:not(.collapsed){position:fixed;top:0;bottom:0;left:0;right:auto;width:min(340px,86vw);max-height:none;z-index:20;
+    display:flex;flex-direction:column;background:var(--paper);outline:0;border:0;border-right:1px solid var(--ink);box-shadow:4px 0 28px rgba(44,39,33,.35);
+    padding:calc(10px + env(safe-area-inset-top,0px)) 16px calc(18px + env(safe-area-inset-bottom,0px)) calc(16px + env(safe-area-inset-left,0px));
+    animation:drawer .25s ease-out}
+  .cartouche:not(.collapsed)>*{flex:none}
+  .cartouche:not(.collapsed) .toggle-cart{order:-1;position:sticky;top:0;z-index:1;margin:0 0 12px;box-shadow:0 6px 8px -6px rgba(44,39,33,.25)}
+  .cart-bd{position:fixed;inset:0;z-index:19;background:rgba(20,17,13,.42);animation:bdin .25s ease-out}
 }
+@keyframes drawer{from{transform:translateX(-100%)}to{transform:none}}
+@keyframes bdin{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.cartouche,.cart-bd{animation:none!important}}
 /* Handy quer */
 @media (max-height:520px) and (orientation:landscape){
   .cartouche{right:auto;width:min(300px,44vw);max-height:calc(100dvh - var(--tb-h,120px) - 24px)}
+  .cartouche:not(.collapsed){width:min(340px,48vw)}
   .timebar{grid-template-columns:auto 1fr;gap:2px 14px;padding:6px 14px 8px 10px}
   #date{font-size:20px;min-width:5.6em}
   #play{width:38px;height:38px}
@@ -270,6 +282,7 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
 <body>
 <div id="map" aria-label="Karte der Gebirgsfront 1915 bis 1918"></div>
 
+<div class="cart-bd" id="cartBd" hidden></div>
 <section class="cartouche" id="cart">
   <h1>Gebirgsfront 1915–1918</h1>
   <div class="sub">Vom Stilfserjoch bis zum Isonzo · Italien gegen Österreich-Ungarn</div>
@@ -760,9 +773,13 @@ chk("lgKuk",on=>fortMarkers.kuk.forEach(m=>m.getElement().hidden=!on));
 chk("lgIta",on=>fortMarkers.ita.forEach(m=>m.getElement().hidden=!on));
 
 const cart=document.getElementById("cart"),tc=document.getElementById("toggleCart");
-const setCart=c=>{cart.classList.toggle("collapsed",c);tc.textContent=c?"\u25BE Legende und Touren":"\u25B4 Legende zuklappen";};
+const cartBd=document.getElementById("cartBd");
+const setCart=c=>{cart.classList.toggle("collapsed",c);cartBd.hidden=!(narrow&&!c);
+  tc.textContent=c?"\u2630 Legende und Touren":"\u00D7 Menü schliessen";tc.setAttribute("aria-expanded",String(!c));};
 setCart(narrow);
 tc.addEventListener("click",()=>setCart(!cart.classList.contains("collapsed")));
+cartBd.addEventListener("click",()=>setCart(true));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&narrow&&!cart.classList.contains("collapsed")){setCart(true);tc.focus();}});
 
 /* Die Hoehe der Zeitleiste steht als --tb-h bereit: Kartusche, Massstab und
    Kartenhinweise halten sich auf dem Handy davon frei. */
@@ -965,7 +982,7 @@ function endTour(){
   setTimeout(()=>{if(!tour)film.hidden=true;},600);
   tourSel.value="";map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:800});
 }
-tourSel.addEventListener("change",()=>tourSel.value?startTour(tourSel.value):endTour());
+tourSel.addEventListener("change",()=>{if(narrow)setCart(true);tourSel.value?startTour(tourSel.value):endTour();});
 $("ftPlay").addEventListener("click",()=>begin(true));
 $("ftSilent").addEventListener("click",()=>begin(false));
 $("ftBack").addEventListener("click",endTour);
