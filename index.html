@@ -129,6 +129,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .film.on .lb-top{height:7vh}.film.on .lb-bot{height:max(132px,15vh)}
 body.filming .cartouche,body.filming .timebar,body.filming .maplibregl-ctrl-top-right,body.filming .mk.site,body.filming .maplibregl-popup{opacity:0;pointer-events:none;transition:opacity .6s}
 body.filming .maplibregl-ctrl-bottom-right{opacity:.55}
+body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transition:opacity .6s}
 .f-title{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;text-align:center;gap:10px;padding:24px;background:radial-gradient(ellipse at center,rgba(20,17,13,.72),rgba(20,17,13,.9));pointer-events:auto;transition:opacity .8s}
 .f-title.out{opacity:0;pointer-events:none}
 .ft-kicker{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:#c9bfae}
@@ -171,6 +172,21 @@ body.filming .maplibregl-ctrl-bottom-right{opacity:.55}
   .f-sub{bottom:62px;font-size:16px;line-height:1.4;min-height:4.2em}
   .f-ctrl button{min-width:38px;height:34px}
 }
+/* Handy quer: wenig Hoehe, darum schmalere Balken und kleineres Foto */
+@media (max-height:520px) and (orientation:landscape){
+  .film.on .lb-top{height:0}.film.on .lb-bot{height:104px}
+  .f-chapter{top:calc(10px + env(safe-area-inset-top,0px));left:calc(12px + env(safe-area-inset-left,0px));max-width:min(360px,44vw);padding:6px 12px 8px}
+  .f-chapter h3{font-size:22px}
+  .f-chapter span{font-size:10.5px;letter-spacing:.2em}
+  .f-photo{top:10px;right:calc(10px + env(safe-area-inset-right,0px));width:132px;padding:5px 5px 3px}
+  .f-photo figcaption{display:none}
+  .f-sub{bottom:54px;font-size:15px;line-height:1.35;min-height:2.8em;width:min(680px,calc(100vw - 190px))}
+  .f-ctrl{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .f-title h2{font-size:30px}
+  .f-title p{font-size:13.5px}
+  .ft-play{margin-top:8px;padding:10px 22px;font-size:16px}
+  .ft-alt{font-size:12.5px}
+}
 @media (prefers-reduced-motion:reduce){.f-photo.show img{animation:none}}
 .lossdlg{border:1px solid var(--ink);background:var(--paper);color:var(--ink);padding:16px 18px;width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 40px);box-shadow:0 6px 30px rgba(44,39,33,.35)}
 .lossdlg::backdrop{background:rgba(44,39,33,.35)}
@@ -187,20 +203,65 @@ body.filming .maplibregl-ctrl-bottom-right{opacity:.55}
 .ld-table th:first-child,.ld-table td:first-child{text-align:left}
 .ld-tip{position:fixed;z-index:20;pointer-events:none;background:var(--paper);border:1px solid var(--ink);padding:5px 8px;font-size:12.5px;box-shadow:0 2px 8px rgba(44,39,33,.25);max-width:260px}
 
-@media (max-width:720px){
-  .cartouche{left:8px;right:62px;max-width:none;padding:10px 12px}
-  .cartouche h1{font-size:21px}
+@media (max-width:720px),(max-height:520px){
+  .cartouche{left:calc(8px + env(safe-area-inset-left,0px));right:62px;max-width:none;padding:10px 12px;box-sizing:border-box;
+    max-height:calc(100dvh - var(--tb-h,150px) - 32px);overflow:auto;overscroll-behavior:contain}
+  .cartouche h1{font-size:20px}
   .cartouche .sub{font-size:13px;margin-bottom:8px}
-  .cartouche.collapsed .legend,.cartouche.collapsed .note,.cartouche.collapsed .hint3d{display:none}
+  .cartouche.collapsed{overflow:visible}
+  .cartouche.collapsed .legend,.cartouche.collapsed .note,.cartouche.collapsed .hint3d,
+  .cartouche.collapsed .sub,.cartouche.collapsed .extras{display:none}
   .cartouche.collapsed .viewsw{margin-bottom:0}
-  .toggle-cart{display:inline-block;margin-top:8px;font:inherit;font-size:12.5px;background:none;border:0;padding:0;color:var(--front);text-decoration:underline;cursor:pointer}
-  .timebar{left:calc(8px + env(safe-area-inset-left,0px));right:calc(8px + env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px));padding:8px 18px 10px 14px;grid-template-columns:1fr}
-  #date{font-size:23px}
-  #play{width:36px;height:36px}
-  #phaseText{font-size:12.5px;max-height:5.6em;overflow:auto}
+  .viewsw button{padding:10px 0}
+  .toggle-cart{display:block;width:100%;margin-top:8px;font:inherit;font-family:var(--f-label);font-size:14.5px;
+    background:var(--paper-2);border:1px solid var(--rule);padding:9px 0;color:var(--ink);text-decoration:none;cursor:pointer}
+  .timebar{left:calc(8px + env(safe-area-inset-left,0px));right:calc(8px + env(safe-area-inset-right,0px));
+    bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:8px 16px 10px 12px;grid-template-columns:1fr;gap:4px 0}
+  #date{font-size:22px}
+  #play{width:44px;height:44px}
+  .phase{padding-top:6px;gap:0 10px;position:relative;cursor:pointer;padding-right:16px}
+  #phaseTitle{font-size:15.5px}
+  #phaseText{font-size:12.5px;flex:1 1 100%;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .track{padding-top:2px}
+  .phase.open #phaseText{display:block;max-height:32dvh;overflow:auto}
+  .phase::after{content:"\25BE";position:absolute;right:0;bottom:0;font-size:12px;color:var(--ink-soft)}
+  .phase.open::after{content:"\25B4"}
   .ticks span.odd{display:none}
-  .cartouche.collapsed .extras{display:none}
   .lossdlg{padding:12px}
+  /* Kartenhinweise und Massstab ueber die Zeitleiste heben */
+  .maplibregl-ctrl-bottom-right,.maplibregl-ctrl-bottom-left{transform:translateY(calc(-1 * var(--tb-h,0px)))}
+  /* Popups als Blatt am unteren Rand: sonst ragen sie am Bildrand aus dem Schirm */
+  .maplibregl-popup:not(.front-pop){position:fixed!important;left:0!important;right:0!important;top:auto!important;bottom:0!important;
+    width:100%!important;max-width:none!important;transform:none!important;z-index:12}
+  .maplibregl-popup:not(.front-pop) .maplibregl-popup-content{max-width:none!important;width:100%;box-sizing:border-box;max-height:min(58dvh,380px);
+    padding:14px 52px 16px calc(14px + env(safe-area-inset-left,0px));border-left:0;border-right:0;box-shadow:0 -5px 24px rgba(44,39,33,.3)}
+  .maplibregl-popup-close-button{font-size:26px;width:44px;height:44px}
+  .front-pop{display:none}
+}
+/* Handy quer */
+@media (max-height:520px) and (orientation:landscape){
+  .cartouche{right:auto;width:min(300px,44vw);max-height:calc(100dvh - var(--tb-h,120px) - 24px)}
+  .timebar{grid-template-columns:auto 1fr;gap:2px 14px;padding:6px 14px 8px 10px}
+  #date{font-size:20px;min-width:5.6em}
+  #play{width:38px;height:38px}
+  .phase{padding-top:4px}
+  #phaseText{-webkit-line-clamp:1}
+  .phase.open #phaseText{max-height:26dvh}
+  .maplibregl-popup:not(.front-pop) .maplibregl-popup-content{max-height:min(62dvh,240px)}
+}
+/* Finger statt Maus: groessere Schaltflaechen */
+@media (pointer:coarse){
+  .legend label{padding:4px 0;font-size:14px}
+  .legend input{width:19px;height:19px}
+  .lg-sub{font-size:13px!important}
+  .tour-pick select{font-size:16px;padding:9px 8px}
+  .linkbtn{padding:6px 0}
+  #slider{height:34px}
+  #slider::-webkit-slider-thumb{width:26px;height:26px;margin-top:-11px}
+  #slider::-moz-range-thumb{width:24px;height:24px}
+  .maplibregl-ctrl-group button{width:40px;height:40px}
+  .f-ctrl button{min-width:44px;height:40px}
+  .tb-x,.ld-table summary{padding:6px 8px}
 }
 @media (prefers-reduced-motion:reduce){.battle.active .ring{animation:none;opacity:.5}}
 </style>
@@ -481,7 +542,8 @@ const ml=(lines,props={})=>({type:"Feature",properties:props,geometry:{type:"Mul
 const empty=fc([]);
 
 /* ---------- Karte ---------- */
-const narrow=window.matchMedia("(max-width:720px)").matches;
+const mqNarrow=window.matchMedia("(max-width:720px),(max-height:520px)");
+let narrow=mqNarrow.matches;
 const map=new maplibregl.Map({
   container:"map",
   style:{version:8,
@@ -526,8 +588,11 @@ const map=new maplibregl.Map({
   maxPitch:75,attributionControl:false
 });
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-right");
-map.addControl(new maplibregl.ScaleControl({unit:"metric"}),"top-right");
-map.addControl(new maplibregl.AttributionControl({compact:false,customAttribution:'<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> · Relief: Terrain Tiles (AWS, Mapzen)'}),"bottom-right");
+map.addControl(new maplibregl.ScaleControl({unit:"metric"}),narrow?"bottom-left":"top-right");
+map.addControl(new maplibregl.AttributionControl({compact:narrow,customAttribution:'<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> · Relief: Terrain Tiles (AWS, Mapzen)'}),"bottom-right");
+
+/* Auf dem Handy steht der Kartenhinweis als kleines i am Rand, nicht als Band */
+if(narrow)map.once("idle",()=>document.querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show"));
 
 const zcls=()=>map.getContainer().classList.toggle("z8",map.getZoom()>=8.25);
 map.on("zoom",zcls);zcls();
@@ -544,7 +609,8 @@ LABELS.filter(l=>l[0]==="region").forEach(([k,t,la,lo,minor])=>{
 let openPop=null;
 function bindPop(m,el,pop){
   if(el.dataset.label)el.setAttribute("aria-label",el.dataset.label); // MapLibre setzt sonst "Map marker"
-  const show=()=>{if(openPop&&openPop!==pop)openPop.remove();if(pop.isOpen()){pop.remove();return;}pop.setLngLat(m.getLngLat()).addTo(map);openPop=pop;};
+  const show=()=>{if(openPop&&openPop!==pop)openPop.remove();if(pop.isOpen()){pop.remove();return;}pop.setLngLat(m.getLngLat()).addTo(map);openPop=pop;
+    if(narrow){setCart(true);map.easeTo({center:m.getLngLat(),offset:[0,-Math.round(innerHeight*0.2)],duration:450});}};
   el.addEventListener("click",e=>{e.stopPropagation();show();});
   el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();show();}});
   m.setOpacity("1","0.75");
@@ -686,8 +752,29 @@ chk("lgKuk",on=>fortMarkers.kuk.forEach(m=>m.getElement().hidden=!on));
 chk("lgIta",on=>fortMarkers.ita.forEach(m=>m.getElement().hidden=!on));
 
 const cart=document.getElementById("cart"),tc=document.getElementById("toggleCart");
-if(narrow)cart.classList.add("collapsed");
-tc.addEventListener("click",()=>{const c=cart.classList.toggle("collapsed");tc.textContent=c?"Legende einblenden":"Legende ausblenden";});
+const setCart=c=>{cart.classList.toggle("collapsed",c);tc.textContent=c?"\u25BE Legende und Touren":"\u25B4 Legende zuklappen";};
+setCart(narrow);
+tc.addEventListener("click",()=>setCart(!cart.classList.contains("collapsed")));
+
+/* Die Hoehe der Zeitleiste steht als --tb-h bereit: Kartusche, Massstab und
+   Kartenhinweise halten sich auf dem Handy davon frei. */
+const timebarEl=document.querySelector(".timebar");
+const setTbH=()=>document.documentElement.style.setProperty("--tb-h",Math.round(timebarEl.getBoundingClientRect().height)+"px");
+setTbH();
+if(window.ResizeObserver)new ResizeObserver(setTbH).observe(timebarEl);
+
+/* Beschreibung der Phase bleibt auf dem Handy einzeilig und klappt auf Tipp auf */
+const phaseEl=document.querySelector(".phase");
+phaseEl.addEventListener("click",()=>{if(narrow)phaseEl.classList.toggle("open");});
+
+/* Dreht man das Gerät, wechselt das Layout mit */
+const onNarrow=()=>{
+  const was=narrow;narrow=mqNarrow.matches;
+  if(was!==narrow){setCart(narrow);if(!narrow)phaseEl.classList.remove("open");}
+  setTbH();map.resize();
+};
+mqNarrow.addEventListener?mqNarrow.addEventListener("change",onNarrow):mqNarrow.addListener(onNarrow);
+window.addEventListener("orientationchange",()=>setTimeout(onNarrow,250));
 
 /* ---------- Heute besuchbar ---------- */
 const SITES=window.SITES||[];
