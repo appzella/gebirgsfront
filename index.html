@@ -588,11 +588,19 @@ const map=new maplibregl.Map({
   maxPitch:75,attributionControl:false
 });
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-right");
-map.addControl(new maplibregl.ScaleControl({unit:"metric"}),narrow?"bottom-left":"top-right");
-map.addControl(new maplibregl.AttributionControl({compact:narrow,customAttribution:'<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> · Relief: Terrain Tiles (AWS, Mapzen)'}),"bottom-right");
-
-/* Auf dem Handy steht der Kartenhinweis als kleines i am Rand, nicht als Band */
-if(narrow)map.once("idle",()=>document.querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show"));
+/* Massstab und Kartenhinweis: auf dem Handy unten links bzw. als kleines i am Rand, nicht als Band.
+   Beim Drehen über die Grenze hinweg werden beide neu gesetzt. */
+let scaleCtl=null,attribCtl=null;
+function placeMapCtls(){
+  if(scaleCtl)map.removeControl(scaleCtl);
+  if(attribCtl)map.removeControl(attribCtl);
+  scaleCtl=new maplibregl.ScaleControl({unit:"metric"});
+  attribCtl=new maplibregl.AttributionControl({compact:narrow,customAttribution:'<a href="https://openfreemap.org" target="_blank">OpenFreeMap</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> · Relief: Terrain Tiles (AWS, Mapzen)'});
+  map.addControl(scaleCtl,narrow?"bottom-left":"top-right");
+  map.addControl(attribCtl,"bottom-right");
+  if(narrow)map.once("idle",()=>document.querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show"));
+}
+placeMapCtls();
 
 const zcls=()=>map.getContainer().classList.toggle("z8",map.getZoom()>=8.25);
 map.on("zoom",zcls);zcls();
@@ -770,7 +778,7 @@ phaseEl.addEventListener("click",()=>{if(narrow)phaseEl.classList.toggle("open")
 /* Dreht man das Gerät, wechselt das Layout mit */
 const onNarrow=()=>{
   const was=narrow;narrow=mqNarrow.matches;
-  if(was!==narrow){setCart(narrow);if(!narrow)phaseEl.classList.remove("open");}
+  if(was!==narrow){setCart(narrow);placeMapCtls();if(!narrow)phaseEl.classList.remove("open");}
   setTbH();map.resize();
 };
 mqNarrow.addEventListener?mqNarrow.addEventListener("change",onNarrow):mqNarrow.addListener(onNarrow);
