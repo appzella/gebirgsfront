@@ -39,7 +39,14 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .legend label{display:flex;align-items:center;gap:9px;font-size:13.5px;cursor:pointer;user-select:none}
 .legend input{accent-color:var(--front);margin:0;width:14px;height:14px}
 .sw{width:30px;height:12px;flex:none;display:inline-block}
-.note{font-size:12px;line-height:1.4;color:var(--ink-soft);margin:10px 0 0;border-top:1px solid var(--rule);padding-top:8px}
+.ct-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.infobtn{flex:none;width:24px;height:24px;margin-top:1px;border-radius:50%;border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  font:italic 600 14px/1 var(--f-body);cursor:pointer;display:grid;place-items:center;padding:0}
+.infobtn:hover{background:var(--ink);color:var(--paper)}
+.infobtn:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+.infodlg{width:min(460px,calc(100vw - 32px))}
+.infodlg p{font-size:14px;line-height:1.5;margin:10px 0 12px}
+.pp-loss{display:block;margin-top:6px;font-size:13px}
 .toggle-cart{display:none}
 
 .timebar{position:absolute;z-index:5;left:calc(12px + env(safe-area-inset-left,0px));right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(26px + env(safe-area-inset-bottom,0px));
@@ -61,8 +68,37 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .ticks span::before{content:"";position:absolute;left:50%;top:-9px;height:6px;border-left:1px solid var(--ink)}
 .ticks span.first{transform:translateX(-9px)}.ticks span.first::before{left:9px}
 .ticks span.last{transform:translateX(calc(-100% + 9px))}.ticks span.last::before{left:auto;right:9px}
-.bticks{position:absolute;left:0;right:0;top:4px;height:8px;pointer-events:none}
+.bticks{position:absolute;left:0;right:0;top:0;height:8px;pointer-events:none}
 .bticks i{position:absolute;width:2px;height:7px;background:var(--front);transform:translateX(-1px);opacity:.75}
+/* Filme in der Zeitleiste: ein Fähnchen je Tour am Startmonat, das Band zeigt ihren Zeitraum */
+.tlane{position:relative;height:22px;margin-bottom:1px}
+.tchip{position:absolute;bottom:0;display:flex;align-items:center;gap:4px;height:20px;padding:0 6px 0 5px;font:inherit;font-family:var(--f-label);font-size:12.5px;line-height:1;
+  color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:0;cursor:pointer;white-space:nowrap;transform:translateX(-9px)}
+.tchip::before{content:"";position:absolute;left:8px;top:100%;height:7px;border-left:1px solid var(--ink)}
+.tchip.end{transform:translateX(calc(-100% + 9px))}.tchip.end::before{left:auto;right:8px}
+.tchip svg{flex:none}
+.tchip:hover,.tchip.cur{background:var(--ink);color:var(--paper)}
+.tchip:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+.trk{position:relative}
+.tband{position:absolute;top:7px;height:12px;background:rgba(44,39,33,.16);pointer-events:none;opacity:0;transition:opacity .2s,left .2s,width .2s}
+.tband.on{opacity:1}
+.tcur{display:none;align-items:center;gap:6px;min-height:36px;padding:0 12px;font:inherit;font-family:var(--f-label);font-size:14.5px;color:var(--paper);background:var(--ink);border:0;border-radius:0;cursor:pointer;min-width:0;flex:0 1 auto}
+.tcur span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Filmkarte über der Zeitleiste */
+.tcard{position:absolute;bottom:calc(100% + 10px);width:min(320px,calc(100vw - 24px));box-sizing:border-box;z-index:6;background:var(--paper);
+  border:1px solid var(--ink);box-shadow:0 6px 24px rgba(44,39,33,.28);padding:11px 14px 13px;animation:tcin .15s ease-out}
+.tcard::after{content:"";position:absolute;top:100%;left:var(--ax,50%);width:12px;height:12px;background:var(--paper);border:1px solid var(--ink);border-top:0;border-left:0;transform:translate(-50%,-6px) rotate(45deg)}
+.tcard[hidden]{display:none}
+.tc-kick{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.tc-title{font-family:var(--f-display);font-size:20px;line-height:1.15;margin:3px 30px 1px 0}
+.tc-date{font-family:var(--f-label);font-style:italic;font-size:14px;color:var(--ink-soft)}
+.tc-sum{font-size:13.5px;line-height:1.45;margin:7px 0 10px}
+.tc-go{display:inline-flex;align-items:center;gap:7px;font:inherit;font-family:var(--f-label);font-size:15px;color:var(--paper);background:var(--ink);border:0;padding:7px 14px;cursor:pointer}
+.tc-go:hover{background:var(--front)}
+.tc-x{position:absolute;top:4px;right:4px;font-size:20px;line-height:1;background:none;border:0;color:var(--ink);cursor:pointer;padding:4px 8px}
+.tc-go:focus-visible,.tc-x:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+@keyframes tcin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.tcur:focus-visible{outline:2px solid var(--front);outline-offset:2px}
 .phase{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:2px 14px;align-items:baseline;border-top:1px solid var(--rule);padding-top:7px;min-width:0}
 #phaseTitle{font-family:var(--f-label);font-style:italic;font-size:17px}
 #phaseText{font-size:13.5px;line-height:1.45;flex:1 1 360px;min-width:0}
@@ -101,11 +137,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .maplibregl-ctrl-attrib{background:rgba(252,251,248,.85)!important;font-size:10px;color:var(--ink-soft)}
 
 .lg-sub{padding-left:23px;font-size:12.5px!important;color:var(--ink-soft)}
-.extras{display:grid;gap:7px;border-top:1px solid var(--rule);margin-top:9px;padding-top:9px}
-.tour-pick{display:grid;gap:3px;font-size:12px;color:var(--ink-soft)}
-.tour-pick select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:1px solid var(--ink);padding:5px 6px;border-radius:0}
 .linkbtn{font:inherit;font-size:13.5px;background:none;border:0;padding:0;color:var(--front);text-decoration:underline;cursor:pointer;text-align:left}
-.linkbtn:focus-visible,.tour-pick select:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+.linkbtn:focus-visible{outline:2px solid var(--front);outline-offset:2px}
 .mk.site svg{filter:drop-shadow(0 1px 1.5px rgba(44,39,33,.35))}
 .pp-img{margin:4px 0 8px;padding:0}
 .pp-img img{display:block;width:100%;height:auto;max-height:190px;object-fit:cover;background:var(--paper-2);filter:grayscale(.15) sepia(.12)}
@@ -209,8 +242,8 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   .cartouche h1{font-size:20px}
   .cartouche .sub{font-size:13px;margin-bottom:8px}
   .cartouche.collapsed{overflow:visible}
-  .cartouche.collapsed .legend,.cartouche.collapsed .note,.cartouche.collapsed .hint3d,
-  .cartouche.collapsed .sub,.cartouche.collapsed .extras{display:none}
+  .cartouche.collapsed .legend,.cartouche.collapsed .hint3d,
+  .cartouche.collapsed .sub{display:none}
   .cartouche.collapsed .viewsw{margin-bottom:0}
   .viewsw button{padding:10px 0}
   .toggle-cart{display:block;width:100%;margin-top:8px;font:inherit;font-family:var(--f-label);font-size:14.5px;
@@ -227,6 +260,14 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   .phase::after{content:"\25BE";position:absolute;right:0;bottom:0;font-size:12px;color:var(--ink-soft)}
   .phase.open::after{content:"\25B4"}
   .ticks span.odd{display:none}
+  /* Auf dem Handy nur das Filmzeichen; der Film zum gewählten Monat steht als Knopf neben dem Datum */
+  .tchip{height:24px;min-width:28px;padding:0 8px;justify-content:center}
+  .tchip span{display:none}
+  .timebar{grid-template-columns:minmax(0,1fr)}
+  .datebox{justify-content:space-between;min-width:0}
+  #date{min-width:0;white-space:nowrap}
+  .tcur{display:flex}.tcur[hidden]{display:none}
+  .tlane{height:24px}
   .lossdlg{padding:12px}
   /* Kartenhinweise und Massstab ueber die Zeitleiste heben */
   .maplibregl-ctrl-bottom-right,.maplibregl-ctrl-bottom-left{transform:translateY(calc(-1 * var(--tb-h,0px)))}
@@ -259,14 +300,17 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   .phase{padding-top:4px}
   #phaseText{-webkit-line-clamp:1}
   .phase.open #phaseText{max-height:26dvh}
+  .tchip{min-width:0;padding:0 6px 0 5px}.tchip span{display:inline}
+  .tcur,.tcur[hidden]{display:none}
   .maplibregl-popup:not(.front-pop) .maplibregl-popup-content{max-height:min(62dvh,240px)}
 }
 /* Finger statt Maus: groessere Schaltflaechen */
 @media (pointer:coarse){
+  .tband{top:11px}
   .legend label{padding:4px 0;font-size:14px}
   .legend input{width:19px;height:19px}
   .lg-sub{font-size:13px!important}
-  .tour-pick select{font-size:16px;padding:9px 8px}
+  .infobtn{width:32px;height:32px;font-size:16px;margin-top:-4px}
   .linkbtn{padding:6px 0}
   #slider{height:34px}
   #slider::-webkit-slider-thumb{width:26px;height:26px;margin-top:-11px}
@@ -284,7 +328,7 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
 
 <div class="cart-bd" id="cartBd" hidden></div>
 <section class="cartouche" id="cart">
-  <h1>Gebirgsfront 1915–1918</h1>
+  <div class="ct-head"><h1>Gebirgsfront 1915–1918</h1><button type="button" class="infobtn" id="infoBtn" aria-label="Über diese Karte: Genauigkeit und Quellen" title="Über diese Karte">i</button></div>
   <div class="sub">Vom Stilfserjoch bis zum Isonzo · Italien gegen Österreich-Ungarn</div>
   <div class="viewsw" role="group" aria-label="Ansicht">
     <button type="button" id="v2d" aria-pressed="true">Karte</button>
@@ -302,12 +346,6 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
     <label class="lg-today"><input type="checkbox" id="lgSites" checked><svg class="sw" viewBox="-15 -6 30 12"><circle r="5.5" fill="#2f5f8a" stroke="#fff" stroke-width="1.2"/></svg>Heute besuchbar</label>
     <label class="lg-sub"><input type="checkbox" id="lgFam">nur familientauglich</label>
   </div>
-  <div class="extras">
-    <label class="tour-pick"><span>Geführte Tour als Film</span>
-      <select id="tourSel"><option value="">Tour wählen …</option></select></label>
-    <button type="button" id="lossBtn" class="linkbtn">Verluste im Vergleich</button>
-  </div>
-  <p class="note">Gipfel, Kampforte und viele Festungswerke sind anhand von Lexikonkoordinaten und dem Höhenmodell eingemessen. Die Frontlinie verbindet diese Stützpunkte und bleibt dazwischen eine Näherung; im Hochgebirge verliefen die Stellungen kleinteiliger. Bilder: Wikimedia Commons; Verlustzahlen: Wikipedia; Nachschubwege: OpenStreetMap.</p>
   <button class="toggle-cart" id="toggleCart" type="button">Legende einblenden</button>
 </section>
 
@@ -315,10 +353,14 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   <div class="datebox">
     <button id="play" type="button" aria-label="Abspielen"><svg width="16" height="16" viewBox="0 0 16 16" id="playIcon"><path d="M4 2.5L13 8L4 13.5Z" fill="currentColor"/></svg></button>
     <div id="date" aria-live="polite">Mai 1915</div>
+    <button type="button" class="tcur" id="tcur" hidden></button>
   </div>
+  <div class="tcard" id="tcard" role="dialog" aria-label="Geführter Film" hidden></div>
   <div class="track">
+    <div class="tlane" id="tlane" aria-label="Filme zu diesem Zeitraum"></div>
+    <div class="trk"><div class="tband" id="tband"></div>
     <div class="bticks" id="bticks"></div>
-    <input type="range" id="slider" min="0" max="42" step="1" value="0" aria-label="Monat wählen">
+    <input type="range" id="slider" min="0" max="42" step="1" value="0" aria-label="Monat wählen"></div>
     <div class="ticks" id="ticks"></div>
   </div>
   <div class="phase"><span id="phaseTitle"></span><span id="phaseText"></span></div>
@@ -347,6 +389,12 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
     <div class="ft-alt"><button type="button" id="ftSilent">ohne Ton, mit Untertiteln</button><button type="button" id="ftBack">zurück zur Karte</button></div>
   </div>
 </section>
+
+<dialog class="lossdlg infodlg" id="infoDlg" aria-labelledby="infoTitle">
+  <div class="ld-head"><h2 id="infoTitle">Über diese Karte</h2><button type="button" class="tb-x" id="infoClose" aria-label="Schliessen">×</button></div>
+  <p>Gipfel, Kampforte und viele Festungswerke sind anhand von Lexikonkoordinaten und dem Höhenmodell eingemessen. Die Frontlinie verbindet diese Stützpunkte und bleibt dazwischen eine Näherung; im Hochgebirge verliefen die Stellungen kleinteiliger. Bilder: Wikimedia Commons; Verlustzahlen: Wikipedia; Nachschubwege: OpenStreetMap.</p>
+  <button type="button" id="lossBtn" class="linkbtn">Verluste der Schlachten im Vergleich</button>
+</dialog>
 
 <dialog class="lossdlg" id="lossDlg" aria-labelledby="lossTitle">
   <div class="ld-head"><h2 id="lossTitle">Verluste je Schlacht</h2><button type="button" class="tb-x" id="lossClose" aria-label="Schliessen">×</button></div>
@@ -679,7 +727,7 @@ function battleSVG(past){
 const bMarkers=BATTLES.map(b=>{
   const el=document.createElement("div");el.className="mk battle";el.hidden=true;el.tabIndex=0;el.setAttribute("role","button");el.dataset.label=(b.n);
   const m=new maplibregl.Marker({element:el}).setLngLat([b.p[1],b.p[0]]).addTo(map);
-  bindPop(m,el,new maplibregl.Popup({offset:14,maxWidth:"300px"}).setHTML(`<div class="pp-kind">Schlacht</div><div class="pp-title">${b.n}</div><div class="pp-date">${b.d}</div>${imgHTML(MEDIA.battles[b.n])}${b.t}${statsHTML(STATS[b.n])}${linksHTML({href:(MEDIA.battles[b.n]||{}).wiki,t:"Wikipedia"},{href:STATS[b.n]&&STATS[b.n].wiki!==(MEDIA.battles[b.n]||{}).wiki&&statsHTML(STATS[b.n])?STATS[b.n].wiki:null,t:"Quelle der Zahlen"})}`));
+  bindPop(m,el,new maplibregl.Popup({offset:14,maxWidth:"300px"}).setHTML(`<div class="pp-kind">Schlacht</div><div class="pp-title">${b.n}</div><div class="pp-date">${b.d}</div>${imgHTML(MEDIA.battles[b.n])}${b.t}${statsHTML(STATS[b.n])}${statsHTML(STATS[b.n])?'<button type="button" class="linkbtn pp-loss">Alle Schlachten im Vergleich</button>':""}${linksHTML({href:(MEDIA.battles[b.n]||{}).wiki,t:"Wikipedia"},{href:STATS[b.n]&&STATS[b.n].wiki!==(MEDIA.battles[b.n]||{}).wiki&&statsHTML(STATS[b.n])?STATS[b.n].wiki:null,t:"Quelle der Zahlen"})}`));
   m._state=null;return m;
 });
 let showBattles=true;
@@ -718,6 +766,7 @@ function update(i){
     }
     el.hidden=!st||!showBattles;
   });
+  if(typeof tourHint==="function")tourHint(i);
 }
 slider.addEventListener("input",()=>update(+slider.value));
 const onStyle=()=>{if(!ready&&map.getSource("front")){ready=true;drawFront();}};map.on("styledata",onStyle);map.on("load",onStyle);
@@ -775,7 +824,7 @@ chk("lgIta",on=>fortMarkers.ita.forEach(m=>m.getElement().hidden=!on));
 const cart=document.getElementById("cart"),tc=document.getElementById("toggleCart");
 const cartBd=document.getElementById("cartBd");
 const setCart=c=>{cart.classList.toggle("collapsed",c);cartBd.hidden=!(narrow&&!c);
-  tc.textContent=c?"\u2630 Legende und Touren":"\u00D7 Menü schliessen";tc.setAttribute("aria-expanded",String(!c));};
+  tc.textContent=c?"\u2630 Legende":"\u00D7 Menü schliessen";tc.setAttribute("aria-expanded",String(!c));};
 setCart(narrow);
 tc.addEventListener("click",()=>setCart(!cart.classList.contains("collapsed")));
 cartBd.addEventListener("click",()=>setCart(true));
@@ -852,11 +901,9 @@ map.on("mouseleave","sup-hit",()=>map.getCanvas().style.cursor="");
 
 /* ---------- Geführte Touren als Film ---------- */
 const TOURS=window.TOURS||[];
-const tourSel=document.getElementById("tourSel"),film=document.getElementById("film");
+const film=document.getElementById("film");
 const $=id=>document.getElementById(id);
 const fTitle=$("fTitle"),fChapter=$("fChapter"),fPhoto=$("fPhoto"),fpImg=$("fpImg"),fSub=$("fSub"),fProg=$("fProg"),fPause=$("fPause"),fSound=$("fSound");
-TOURS.forEach(t=>tourSel.add(new Option(t.t,t.id)));
-if(!TOURS.length)tourSel.closest("label").hidden=true;
 function terrain(on){
   b2.setAttribute("aria-pressed",String(!on));b3.setAttribute("aria-pressed",String(on));
   if(on&&!map.getTerrain()){map.setTerrain({source:"dem",exaggeration:1.4});if(map.setSky)map.setSky(SKY);}
@@ -980,9 +1027,66 @@ function endTour(){
   gen++;cancelAnimationFrame(clock);clearTimeout(photoT);au.pause();map.stop();tour=null;
   film.classList.remove("on");document.body.classList.remove("filming");
   setTimeout(()=>{if(!tour)film.hidden=true;},600);
-  tourSel.value="";map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:800});
+  map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:800});
 }
-tourSel.addEventListener("change",()=>{if(narrow)setCart(true);tourSel.value?startTour(tourSel.value):endTour();});
+/* Fähnchen in der Zeitleiste. Maus: Darüberfahren zeigt die Filmkarte, Klick startet den Film.
+   Finger: Antippen zeigt die Karte, ihr Knopf startet den Film. Hervorgehoben ist der Film zum gewählten Monat. */
+const tSpan=t=>{const ms=[t.i.m,...t.steps.map(s=>s.m)];return [Math.min(...ms),Math.max(...ms)];};
+const tlane=$("tlane"),tband=$("tband"),tcur=$("tcur"),tcard=$("tcard");
+const hoverDev=matchMedia("(hover:hover) and (pointer:fine)");
+const filmIcon='<svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true"><path d="M2 1.2L10.5 5L2 8.8Z" fill="currentColor"/></svg>';
+let cardFor=null,cardT=null;
+function showCard(c,anchor){
+  clearTimeout(cardT);
+  if(cardFor!==c){
+    cardFor=c;const t=c.t;
+    tcard.innerHTML=`<div class="tc-kick">Geführter Film · rund ${Math.round((t.steps.length+1)*27/60)} Minuten</div>
+      <div class="tc-title">${t.t}</div><div class="tc-date">${mName(c.a)} bis ${mName(c.b)}</div>
+      ${t.s?`<p class="tc-sum">${t.s}</p>`:""}
+      <button type="button" class="tc-go">${filmIcon}<span>Film starten</span></button>
+      <button type="button" class="tc-x" aria-label="Schliessen">×</button>`;
+    tcard.querySelector(".tc-go").addEventListener("click",()=>{hideCard(0);startTour(t.id);});
+    tcard.querySelector(".tc-x").addEventListener("click",()=>{hideCard(0);anchor.focus();});
+  }
+  tcard.hidden=false;showBand(c.a,c.b);
+  // über dem Fähnchen ausrichten, aber innerhalb der Zeitleiste halten
+  const tb=timebarEl.getBoundingClientRect(),r=anchor.getBoundingClientRect(),w=tcard.offsetWidth;
+  tcard.style.left=Math.max(0,Math.min(tb.width-w,r.left+r.width/2-tb.left-w/2))+"px";
+  tcard.style.setProperty("--ax",(r.left+r.width/2-tb.left-parseFloat(tcard.style.left))+"px");
+}
+function hideCard(delay){
+  clearTimeout(cardT);
+  cardT=setTimeout(()=>{tcard.hidden=true;cardFor=null;tourHint(+slider.value);},delay);
+}
+tcard.addEventListener("mouseenter",()=>clearTimeout(cardT));
+tcard.addEventListener("mouseleave",()=>hideCard(250));
+document.addEventListener("pointerdown",e=>{if(!tcard.hidden&&!e.target.closest(".tcard,.tchip,.tcur"))hideCard(0);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!tcard.hidden)hideCard(0);});
+var tChips=TOURS.map(t=>{
+  const [a,b]=tSpan(t),btn=document.createElement("button");
+  btn.type="button";btn.className="tchip"+(t.i.m>34?" end":"");btn.style.left=pos(t.i.m);
+  btn.innerHTML=filmIcon+`<span>${t.k||t.t}</span>`;
+  btn.setAttribute("aria-label",`Film: ${t.t} (${mName(a)} bis ${mName(b)})`);
+  const c={t,a,b,btn};
+  btn.addEventListener("click",()=>{hoverDev.matches?startTour(t.id):(cardFor===c&&!tcard.hidden?hideCard(0):showCard(c,btn));});
+  btn.addEventListener("mouseenter",()=>{if(hoverDev.matches)showCard(c,btn);});
+  btn.addEventListener("mouseleave",()=>{if(hoverDev.matches)hideCard(250);});
+  btn.addEventListener("focus",()=>{if(btn.matches(":focus-visible"))showCard(c,btn);});
+  btn.addEventListener("blur",e=>{if(!tcard.contains(e.relatedTarget))hideCard(150);});
+  tlane.appendChild(btn);return c;
+});
+tcur.addEventListener("click",()=>{const c=tChips.find(c=>c.t.id===tcur.dataset.id);if(c)cardFor===c&&!tcard.hidden?hideCard(0):showCard(c,tcur);});
+if(!TOURS.length)tlane.hidden=true;
+function showBand(a,b){tband.style.left=pos(a);tband.style.width=`calc((100% - 18px) * ${(b-a)/42})`;tband.classList.add("on");}
+function tourHint(i){
+  if(!tChips)return;
+  const hit=tChips.filter(c=>i>=c.a&&i<=c.b).sort((x,y)=>(x.b-x.a)-(y.b-y.a))[0];
+  tChips.forEach(c=>c.btn.classList.toggle("cur",c===hit));
+  tcur.hidden=!hit;if(hit){tcur.innerHTML=filmIcon+`<span>${hit.t.k||hit.t.t}</span>`;tcur.dataset.id=hit.t.id;tcur.setAttribute("aria-label",hit.btn.getAttribute("aria-label"));}
+  if(cardFor)return;
+  hit?showBand(hit.a,hit.b):tband.classList.remove("on");
+}
+tourHint(+slider.value);
 $("ftPlay").addEventListener("click",()=>begin(true));
 $("ftSilent").addEventListener("click",()=>begin(false));
 $("ftBack").addEventListener("click",endTour);
@@ -1034,7 +1138,14 @@ function drawLoss(){
   });
   document.getElementById("lossTable").innerHTML=`<table><thead><tr><th>Schlacht</th><th>Verluste Italien</th><th>Verluste Ö-U</th><th>Quelle</th></tr></thead><tbody>${lossRows.map(r=>`<tr><td>${esc(r.b.n)}</td><td>${fmtN(r.st.ita.verluste)}</td><td>${fmtN(r.st.kuk.verluste)}</td><td>${r.st.wiki?`<a href="${esc(r.st.wiki)}" target="_blank" rel="noopener">Wikipedia</a>`:""}</td></tr>`).join("")}</tbody></table>`;
 }
-document.getElementById("lossBtn").addEventListener("click",()=>{lossDlg.showModal();drawLoss();});
+const infoDlg=document.getElementById("infoDlg");
+document.getElementById("infoBtn").addEventListener("click",()=>infoDlg.showModal());
+document.getElementById("infoClose").addEventListener("click",()=>infoDlg.close());
+infoDlg.addEventListener("click",e=>{if(e.target===infoDlg)infoDlg.close();});
+const openLoss=()=>{if(infoDlg.open)infoDlg.close();lossDlg.showModal();drawLoss();};
+document.getElementById("lossBtn").addEventListener("click",openLoss);
+// Schlacht-Popups mit Verlustzahlen verweisen auf den Vergleich aller Schlachten
+document.addEventListener("click",e=>{if(e.target.closest(".pp-loss"))openLoss();});
 document.getElementById("lossClose").addEventListener("click",()=>lossDlg.close());
 lossDlg.addEventListener("click",e=>{if(e.target===lossDlg)lossDlg.close();});
 lossDlg.addEventListener("close",()=>lossTip.hidden=true);
