@@ -61,8 +61,23 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .ticks span::before{content:"";position:absolute;left:50%;top:-9px;height:6px;border-left:1px solid var(--ink)}
 .ticks span.first{transform:translateX(-9px)}.ticks span.first::before{left:9px}
 .ticks span.last{transform:translateX(calc(-100% + 9px))}.ticks span.last::before{left:auto;right:9px}
-.bticks{position:absolute;left:0;right:0;top:4px;height:8px;pointer-events:none}
+.bticks{position:absolute;left:0;right:0;top:0;height:8px;pointer-events:none}
 .bticks i{position:absolute;width:2px;height:7px;background:var(--front);transform:translateX(-1px);opacity:.75}
+/* Filme in der Zeitleiste: ein Fähnchen je Tour am Startmonat, das Band zeigt ihren Zeitraum */
+.tlane{position:relative;height:22px;margin-bottom:1px}
+.tchip{position:absolute;bottom:0;display:flex;align-items:center;gap:4px;height:20px;padding:0 6px 0 5px;font:inherit;font-family:var(--f-label);font-size:12.5px;line-height:1;
+  color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:0;cursor:pointer;white-space:nowrap;transform:translateX(-9px)}
+.tchip::before{content:"";position:absolute;left:8px;top:100%;height:7px;border-left:1px solid var(--ink)}
+.tchip.end{transform:translateX(calc(-100% + 9px))}.tchip.end::before{left:auto;right:8px}
+.tchip svg{flex:none}
+.tchip:hover,.tchip.cur{background:var(--ink);color:var(--paper)}
+.tchip:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+.trk{position:relative}
+.tband{position:absolute;top:7px;height:12px;background:rgba(44,39,33,.16);pointer-events:none;opacity:0;transition:opacity .2s,left .2s,width .2s}
+.tband.on{opacity:1}
+.tcur{display:none;align-items:center;gap:6px;min-height:36px;padding:0 12px;font:inherit;font-family:var(--f-label);font-size:14.5px;color:var(--paper);background:var(--ink);border:0;border-radius:0;cursor:pointer;min-width:0;flex:0 1 auto}
+.tcur span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tcur:focus-visible{outline:2px solid var(--front);outline-offset:2px}
 .phase{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:2px 14px;align-items:baseline;border-top:1px solid var(--rule);padding-top:7px;min-width:0}
 #phaseTitle{font-family:var(--f-label);font-style:italic;font-size:17px}
 #phaseText{font-size:13.5px;line-height:1.45;flex:1 1 360px;min-width:0}
@@ -227,6 +242,14 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   .phase::after{content:"\25BE";position:absolute;right:0;bottom:0;font-size:12px;color:var(--ink-soft)}
   .phase.open::after{content:"\25B4"}
   .ticks span.odd{display:none}
+  /* Auf dem Handy nur das Filmzeichen; der Film zum gewählten Monat steht als Knopf neben dem Datum */
+  .tchip{height:24px;min-width:28px;padding:0 8px;justify-content:center}
+  .tchip span{display:none}
+  .timebar{grid-template-columns:minmax(0,1fr)}
+  .datebox{justify-content:space-between;min-width:0}
+  #date{min-width:0;white-space:nowrap}
+  .tcur{display:flex}.tcur[hidden]{display:none}
+  .tlane{height:24px}
   .lossdlg{padding:12px}
   /* Kartenhinweise und Massstab ueber die Zeitleiste heben */
   .maplibregl-ctrl-bottom-right,.maplibregl-ctrl-bottom-left{transform:translateY(calc(-1 * var(--tb-h,0px)))}
@@ -259,10 +282,13 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   .phase{padding-top:4px}
   #phaseText{-webkit-line-clamp:1}
   .phase.open #phaseText{max-height:26dvh}
+  .tchip{min-width:0;padding:0 6px 0 5px}.tchip span{display:inline}
+  .tcur,.tcur[hidden]{display:none}
   .maplibregl-popup:not(.front-pop) .maplibregl-popup-content{max-height:min(62dvh,240px)}
 }
 /* Finger statt Maus: groessere Schaltflaechen */
 @media (pointer:coarse){
+  .tband{top:11px}
   .legend label{padding:4px 0;font-size:14px}
   .legend input{width:19px;height:19px}
   .lg-sub{font-size:13px!important}
@@ -315,10 +341,13 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   <div class="datebox">
     <button id="play" type="button" aria-label="Abspielen"><svg width="16" height="16" viewBox="0 0 16 16" id="playIcon"><path d="M4 2.5L13 8L4 13.5Z" fill="currentColor"/></svg></button>
     <div id="date" aria-live="polite">Mai 1915</div>
+    <button type="button" class="tcur" id="tcur" hidden></button>
   </div>
   <div class="track">
+    <div class="tlane" id="tlane" aria-label="Filme zu diesem Zeitraum"></div>
+    <div class="trk"><div class="tband" id="tband"></div>
     <div class="bticks" id="bticks"></div>
-    <input type="range" id="slider" min="0" max="42" step="1" value="0" aria-label="Monat wählen">
+    <input type="range" id="slider" min="0" max="42" step="1" value="0" aria-label="Monat wählen"></div>
     <div class="ticks" id="ticks"></div>
   </div>
   <div class="phase"><span id="phaseTitle"></span><span id="phaseText"></span></div>
@@ -718,6 +747,7 @@ function update(i){
     }
     el.hidden=!st||!showBattles;
   });
+  if(typeof tourHint==="function")tourHint(i);
 }
 slider.addEventListener("input",()=>update(+slider.value));
 const onStyle=()=>{if(!ready&&map.getSource("front")){ready=true;drawFront();}};map.on("styledata",onStyle);map.on("load",onStyle);
@@ -982,6 +1012,31 @@ function endTour(){
   setTimeout(()=>{if(!tour)film.hidden=true;},600);
   tourSel.value="";map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:800});
 }
+/* Fähnchen in der Zeitleiste: Antippen startet den Film; hervorgehoben ist der Film zum gewählten Monat */
+const tSpan=t=>{const ms=[t.i.m,...t.steps.map(s=>s.m)];return [Math.min(...ms),Math.max(...ms)];};
+const tlane=$("tlane"),tband=$("tband"),tcur=$("tcur");
+tcur.addEventListener("click",()=>{tourSel.value=tcur.dataset.id;startTour(tcur.dataset.id);});
+const filmIcon='<svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true"><path d="M2 1.2L10.5 5L2 8.8Z" fill="currentColor"/></svg>';
+var tChips=TOURS.map(t=>{
+  const [a,b]=tSpan(t),btn=document.createElement("button");
+  btn.type="button";btn.className="tchip"+(t.i.m>34?" end":"");btn.style.left=pos(t.i.m);
+  btn.innerHTML=filmIcon+`<span>${t.k||t.t}</span>`;
+  btn.title=`Film: ${t.t} (${mName(a)} bis ${mName(b)})`;btn.setAttribute("aria-label",btn.title);
+  btn.addEventListener("click",()=>{tourSel.value=t.id;startTour(t.id);});
+  btn.addEventListener("mouseenter",()=>showBand(a,b));btn.addEventListener("focus",()=>showBand(a,b));
+  btn.addEventListener("mouseleave",()=>tourHint(+slider.value));btn.addEventListener("blur",()=>tourHint(+slider.value));
+  tlane.appendChild(btn);return {t,a,b,btn};
+});
+if(!TOURS.length)tlane.hidden=true;
+function showBand(a,b){tband.style.left=pos(a);tband.style.width=`calc((100% - 18px) * ${(b-a)/42})`;tband.classList.add("on");}
+function tourHint(i){
+  if(!tChips)return;
+  const hit=tChips.filter(c=>i>=c.a&&i<=c.b).sort((x,y)=>(x.b-x.a)-(y.b-y.a))[0];
+  tChips.forEach(c=>c.btn.classList.toggle("cur",c===hit));
+  tcur.hidden=!hit;if(hit){tcur.innerHTML=filmIcon+`<span>${hit.t.k||hit.t.t}</span>`;tcur.dataset.id=hit.t.id;tcur.setAttribute("aria-label",hit.btn.title);}
+  hit?showBand(hit.a,hit.b):tband.classList.remove("on");
+}
+tourHint(+slider.value);
 tourSel.addEventListener("change",()=>{if(narrow)setCart(true);tourSel.value?startTour(tourSel.value):endTour();});
 $("ftPlay").addEventListener("click",()=>begin(true));
 $("ftSilent").addEventListener("click",()=>begin(false));
