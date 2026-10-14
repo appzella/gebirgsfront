@@ -39,7 +39,14 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .legend label{display:flex;align-items:center;gap:9px;font-size:13.5px;cursor:pointer;user-select:none}
 .legend input{accent-color:var(--front);margin:0;width:14px;height:14px}
 .sw{width:30px;height:12px;flex:none;display:inline-block}
-.note{font-size:12px;line-height:1.4;color:var(--ink-soft);margin:10px 0 0;border-top:1px solid var(--rule);padding-top:8px}
+.ct-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.infobtn{flex:none;width:24px;height:24px;margin-top:1px;border-radius:50%;border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+  font:italic 600 14px/1 var(--f-body);cursor:pointer;display:grid;place-items:center;padding:0}
+.infobtn:hover{background:var(--ink);color:var(--paper)}
+.infobtn:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+.infodlg{width:min(460px,calc(100vw - 32px))}
+.infodlg p{font-size:14px;line-height:1.5;margin:10px 0 12px}
+.pp-loss{display:block;margin-top:6px;font-size:13px}
 .toggle-cart{display:none}
 
 .timebar{position:absolute;z-index:5;left:calc(12px + env(safe-area-inset-left,0px));right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(26px + env(safe-area-inset-bottom,0px));
@@ -116,11 +123,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .maplibregl-ctrl-attrib{background:rgba(252,251,248,.85)!important;font-size:10px;color:var(--ink-soft)}
 
 .lg-sub{padding-left:23px;font-size:12.5px!important;color:var(--ink-soft)}
-.extras{display:grid;gap:7px;border-top:1px solid var(--rule);margin-top:9px;padding-top:9px}
-.tour-pick{display:grid;gap:3px;font-size:12px;color:var(--ink-soft)}
-.tour-pick select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:1px solid var(--ink);padding:5px 6px;border-radius:0}
 .linkbtn{font:inherit;font-size:13.5px;background:none;border:0;padding:0;color:var(--front);text-decoration:underline;cursor:pointer;text-align:left}
-.linkbtn:focus-visible,.tour-pick select:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+.linkbtn:focus-visible{outline:2px solid var(--front);outline-offset:2px}
 .mk.site svg{filter:drop-shadow(0 1px 1.5px rgba(44,39,33,.35))}
 .pp-img{margin:4px 0 8px;padding:0}
 .pp-img img{display:block;width:100%;height:auto;max-height:190px;object-fit:cover;background:var(--paper-2);filter:grayscale(.15) sepia(.12)}
@@ -224,8 +228,8 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   .cartouche h1{font-size:20px}
   .cartouche .sub{font-size:13px;margin-bottom:8px}
   .cartouche.collapsed{overflow:visible}
-  .cartouche.collapsed .legend,.cartouche.collapsed .note,.cartouche.collapsed .hint3d,
-  .cartouche.collapsed .sub,.cartouche.collapsed .extras{display:none}
+  .cartouche.collapsed .legend,.cartouche.collapsed .hint3d,
+  .cartouche.collapsed .sub{display:none}
   .cartouche.collapsed .viewsw{margin-bottom:0}
   .viewsw button{padding:10px 0}
   .toggle-cart{display:block;width:100%;margin-top:8px;font:inherit;font-family:var(--f-label);font-size:14.5px;
@@ -292,7 +296,7 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
   .legend label{padding:4px 0;font-size:14px}
   .legend input{width:19px;height:19px}
   .lg-sub{font-size:13px!important}
-  .tour-pick select{font-size:16px;padding:9px 8px}
+  .infobtn{width:32px;height:32px;font-size:16px;margin-top:-4px}
   .linkbtn{padding:6px 0}
   #slider{height:34px}
   #slider::-webkit-slider-thumb{width:26px;height:26px;margin-top:-11px}
@@ -310,7 +314,7 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
 
 <div class="cart-bd" id="cartBd" hidden></div>
 <section class="cartouche" id="cart">
-  <h1>Gebirgsfront 1915–1918</h1>
+  <div class="ct-head"><h1>Gebirgsfront 1915–1918</h1><button type="button" class="infobtn" id="infoBtn" aria-label="Über diese Karte: Genauigkeit und Quellen" title="Über diese Karte">i</button></div>
   <div class="sub">Vom Stilfserjoch bis zum Isonzo · Italien gegen Österreich-Ungarn</div>
   <div class="viewsw" role="group" aria-label="Ansicht">
     <button type="button" id="v2d" aria-pressed="true">Karte</button>
@@ -328,12 +332,6 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
     <label class="lg-today"><input type="checkbox" id="lgSites" checked><svg class="sw" viewBox="-15 -6 30 12"><circle r="5.5" fill="#2f5f8a" stroke="#fff" stroke-width="1.2"/></svg>Heute besuchbar</label>
     <label class="lg-sub"><input type="checkbox" id="lgFam">nur familientauglich</label>
   </div>
-  <div class="extras">
-    <label class="tour-pick"><span>Geführte Tour als Film</span>
-      <select id="tourSel"><option value="">Tour wählen …</option></select></label>
-    <button type="button" id="lossBtn" class="linkbtn">Verluste im Vergleich</button>
-  </div>
-  <p class="note">Gipfel, Kampforte und viele Festungswerke sind anhand von Lexikonkoordinaten und dem Höhenmodell eingemessen. Die Frontlinie verbindet diese Stützpunkte und bleibt dazwischen eine Näherung; im Hochgebirge verliefen die Stellungen kleinteiliger. Bilder: Wikimedia Commons; Verlustzahlen: Wikipedia; Nachschubwege: OpenStreetMap.</p>
   <button class="toggle-cart" id="toggleCart" type="button">Legende einblenden</button>
 </section>
 
@@ -376,6 +374,12 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
     <div class="ft-alt"><button type="button" id="ftSilent">ohne Ton, mit Untertiteln</button><button type="button" id="ftBack">zurück zur Karte</button></div>
   </div>
 </section>
+
+<dialog class="lossdlg infodlg" id="infoDlg" aria-labelledby="infoTitle">
+  <div class="ld-head"><h2 id="infoTitle">Über diese Karte</h2><button type="button" class="tb-x" id="infoClose" aria-label="Schliessen">×</button></div>
+  <p>Gipfel, Kampforte und viele Festungswerke sind anhand von Lexikonkoordinaten und dem Höhenmodell eingemessen. Die Frontlinie verbindet diese Stützpunkte und bleibt dazwischen eine Näherung; im Hochgebirge verliefen die Stellungen kleinteiliger. Bilder: Wikimedia Commons; Verlustzahlen: Wikipedia; Nachschubwege: OpenStreetMap.</p>
+  <button type="button" id="lossBtn" class="linkbtn">Verluste der Schlachten im Vergleich</button>
+</dialog>
 
 <dialog class="lossdlg" id="lossDlg" aria-labelledby="lossTitle">
   <div class="ld-head"><h2 id="lossTitle">Verluste je Schlacht</h2><button type="button" class="tb-x" id="lossClose" aria-label="Schliessen">×</button></div>
@@ -708,7 +712,7 @@ function battleSVG(past){
 const bMarkers=BATTLES.map(b=>{
   const el=document.createElement("div");el.className="mk battle";el.hidden=true;el.tabIndex=0;el.setAttribute("role","button");el.dataset.label=(b.n);
   const m=new maplibregl.Marker({element:el}).setLngLat([b.p[1],b.p[0]]).addTo(map);
-  bindPop(m,el,new maplibregl.Popup({offset:14,maxWidth:"300px"}).setHTML(`<div class="pp-kind">Schlacht</div><div class="pp-title">${b.n}</div><div class="pp-date">${b.d}</div>${imgHTML(MEDIA.battles[b.n])}${b.t}${statsHTML(STATS[b.n])}${linksHTML({href:(MEDIA.battles[b.n]||{}).wiki,t:"Wikipedia"},{href:STATS[b.n]&&STATS[b.n].wiki!==(MEDIA.battles[b.n]||{}).wiki&&statsHTML(STATS[b.n])?STATS[b.n].wiki:null,t:"Quelle der Zahlen"})}`));
+  bindPop(m,el,new maplibregl.Popup({offset:14,maxWidth:"300px"}).setHTML(`<div class="pp-kind">Schlacht</div><div class="pp-title">${b.n}</div><div class="pp-date">${b.d}</div>${imgHTML(MEDIA.battles[b.n])}${b.t}${statsHTML(STATS[b.n])}${statsHTML(STATS[b.n])?'<button type="button" class="linkbtn pp-loss">Alle Schlachten im Vergleich</button>':""}${linksHTML({href:(MEDIA.battles[b.n]||{}).wiki,t:"Wikipedia"},{href:STATS[b.n]&&STATS[b.n].wiki!==(MEDIA.battles[b.n]||{}).wiki&&statsHTML(STATS[b.n])?STATS[b.n].wiki:null,t:"Quelle der Zahlen"})}`));
   m._state=null;return m;
 });
 let showBattles=true;
@@ -805,7 +809,7 @@ chk("lgIta",on=>fortMarkers.ita.forEach(m=>m.getElement().hidden=!on));
 const cart=document.getElementById("cart"),tc=document.getElementById("toggleCart");
 const cartBd=document.getElementById("cartBd");
 const setCart=c=>{cart.classList.toggle("collapsed",c);cartBd.hidden=!(narrow&&!c);
-  tc.textContent=c?"\u2630 Legende und Touren":"\u00D7 Menü schliessen";tc.setAttribute("aria-expanded",String(!c));};
+  tc.textContent=c?"\u2630 Legende":"\u00D7 Menü schliessen";tc.setAttribute("aria-expanded",String(!c));};
 setCart(narrow);
 tc.addEventListener("click",()=>setCart(!cart.classList.contains("collapsed")));
 cartBd.addEventListener("click",()=>setCart(true));
@@ -882,11 +886,9 @@ map.on("mouseleave","sup-hit",()=>map.getCanvas().style.cursor="");
 
 /* ---------- Geführte Touren als Film ---------- */
 const TOURS=window.TOURS||[];
-const tourSel=document.getElementById("tourSel"),film=document.getElementById("film");
+const film=document.getElementById("film");
 const $=id=>document.getElementById(id);
 const fTitle=$("fTitle"),fChapter=$("fChapter"),fPhoto=$("fPhoto"),fpImg=$("fpImg"),fSub=$("fSub"),fProg=$("fProg"),fPause=$("fPause"),fSound=$("fSound");
-TOURS.forEach(t=>tourSel.add(new Option(t.t,t.id)));
-if(!TOURS.length)tourSel.closest("label").hidden=true;
 function terrain(on){
   b2.setAttribute("aria-pressed",String(!on));b3.setAttribute("aria-pressed",String(on));
   if(on&&!map.getTerrain()){map.setTerrain({source:"dem",exaggeration:1.4});if(map.setSky)map.setSky(SKY);}
@@ -1010,19 +1012,19 @@ function endTour(){
   gen++;cancelAnimationFrame(clock);clearTimeout(photoT);au.pause();map.stop();tour=null;
   film.classList.remove("on");document.body.classList.remove("filming");
   setTimeout(()=>{if(!tour)film.hidden=true;},600);
-  tourSel.value="";map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:800});
+  map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:800});
 }
 /* Fähnchen in der Zeitleiste: Antippen startet den Film; hervorgehoben ist der Film zum gewählten Monat */
 const tSpan=t=>{const ms=[t.i.m,...t.steps.map(s=>s.m)];return [Math.min(...ms),Math.max(...ms)];};
 const tlane=$("tlane"),tband=$("tband"),tcur=$("tcur");
-tcur.addEventListener("click",()=>{tourSel.value=tcur.dataset.id;startTour(tcur.dataset.id);});
+tcur.addEventListener("click",()=>startTour(tcur.dataset.id));
 const filmIcon='<svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true"><path d="M2 1.2L10.5 5L2 8.8Z" fill="currentColor"/></svg>';
 var tChips=TOURS.map(t=>{
   const [a,b]=tSpan(t),btn=document.createElement("button");
   btn.type="button";btn.className="tchip"+(t.i.m>34?" end":"");btn.style.left=pos(t.i.m);
   btn.innerHTML=filmIcon+`<span>${t.k||t.t}</span>`;
   btn.title=`Film: ${t.t} (${mName(a)} bis ${mName(b)})`;btn.setAttribute("aria-label",btn.title);
-  btn.addEventListener("click",()=>{tourSel.value=t.id;startTour(t.id);});
+  btn.addEventListener("click",()=>startTour(t.id));
   btn.addEventListener("mouseenter",()=>showBand(a,b));btn.addEventListener("focus",()=>showBand(a,b));
   btn.addEventListener("mouseleave",()=>tourHint(+slider.value));btn.addEventListener("blur",()=>tourHint(+slider.value));
   tlane.appendChild(btn);return {t,a,b,btn};
@@ -1037,7 +1039,6 @@ function tourHint(i){
   hit?showBand(hit.a,hit.b):tband.classList.remove("on");
 }
 tourHint(+slider.value);
-tourSel.addEventListener("change",()=>{if(narrow)setCart(true);tourSel.value?startTour(tourSel.value):endTour();});
 $("ftPlay").addEventListener("click",()=>begin(true));
 $("ftSilent").addEventListener("click",()=>begin(false));
 $("ftBack").addEventListener("click",endTour);
@@ -1089,7 +1090,14 @@ function drawLoss(){
   });
   document.getElementById("lossTable").innerHTML=`<table><thead><tr><th>Schlacht</th><th>Verluste Italien</th><th>Verluste Ö-U</th><th>Quelle</th></tr></thead><tbody>${lossRows.map(r=>`<tr><td>${esc(r.b.n)}</td><td>${fmtN(r.st.ita.verluste)}</td><td>${fmtN(r.st.kuk.verluste)}</td><td>${r.st.wiki?`<a href="${esc(r.st.wiki)}" target="_blank" rel="noopener">Wikipedia</a>`:""}</td></tr>`).join("")}</tbody></table>`;
 }
-document.getElementById("lossBtn").addEventListener("click",()=>{lossDlg.showModal();drawLoss();});
+const infoDlg=document.getElementById("infoDlg");
+document.getElementById("infoBtn").addEventListener("click",()=>infoDlg.showModal());
+document.getElementById("infoClose").addEventListener("click",()=>infoDlg.close());
+infoDlg.addEventListener("click",e=>{if(e.target===infoDlg)infoDlg.close();});
+const openLoss=()=>{if(infoDlg.open)infoDlg.close();lossDlg.showModal();drawLoss();};
+document.getElementById("lossBtn").addEventListener("click",openLoss);
+// Schlacht-Popups mit Verlustzahlen verweisen auf den Vergleich aller Schlachten
+document.addEventListener("click",e=>{if(e.target.closest(".pp-loss"))openLoss();});
 document.getElementById("lossClose").addEventListener("click",()=>lossDlg.close());
 lossDlg.addEventListener("click",e=>{if(e.target===lossDlg)lossDlg.close();});
 lossDlg.addEventListener("close",()=>lossTip.hidden=true);
