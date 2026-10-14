@@ -1,9 +1,9 @@
 /* Geführte Touren als kleine Dokumentarfilme.
    m = Monatsindex (0 = Mai 1915), c = [lon,lat], z = Zoom, p = Neigung, b = Drehung,
    h = Kapiteltitel, x = Sprechertext (auch Untertitel), img/cap = historisches Foto (Wikimedia Commons).
-   i = Vorspann der Tour, k = Kurzname für die Zeitleiste. Tondateien: audio/<id>-0.mp3 (Vorspann), audio/<id>-<n>.mp3 (Kapitel n). */
+   i = Vorspann der Tour, k = Kurzname und s = kurze Inhaltsangabe für die Zeitleiste. Tondateien: audio/<id>-0.mp3 (Vorspann), audio/<id>-<n>.mp3 (Kapitel n). */
 window.TOURS=[
- {id:"straf",k:"Asiago",t:"Die Strafexpedition 1916",i:{m:12,c:[11.35,45.88],z:8.9,p:30,b:0,
+ {id:"straf",s:"Österreich-Ungarn greift im Mai 1916 aus dem Trentino an, erobert Asiago und Arsiero und bleibt kurz vor der Ebene stecken.",k:"Asiago",t:"Die Strafexpedition 1916",i:{m:12,c:[11.35,45.88],z:8.9,p:30,b:0,
   x:"Mai 1916. Seit einem Jahr kämpfen Italien und Österreich-Ungarn in den Alpen. Nun will Generalstabschef Conrad von Hötzendorf den Krieg im Süden mit einem einzigen Schlag entscheiden: aus dem Trentino hinunter in die venezianische Ebene, um die italienischen Armeen am Isonzo von hinten abzuschneiden."},
  steps:[
   {m:12,c:[11.3,45.93],z:9.6,p:40,b:-10,h:"Die Festungsriegel",img:"42 cm Haubitze am Monte Rover. Aufgenommen im Mai 1916. (BildID 15534014).jpg",cap:"42-cm-Mörser am Monte Rover, Mai 1916",
@@ -16,7 +16,7 @@ window.TOURS=[
    x:"Anfang Juni liegt die venezianische Ebene zum Greifen nah. Doch der Angriff verliert an Kraft. Der Nachschub über die Berge stockt, die Truppen sind erschöpft. Und Italien bringt mit Lastwagen und Eisenbahn in wenigen Tagen eine ganze neue Armee heran."},
   {m:14,c:[11.45,45.9],z:9.6,p:35,b:-10,h:"Rückzug auf die Winterstellung",img:"Monte Cimone, Stollenbau (BildID 15733601).jpg",cap:"Stollenbau am Monte Cimone, 1916",
    x:"Am 4. Juni greift im Osten die russische Armee unter General Brussilow an. Österreich-Ungarn muss Truppen abziehen, die Offensive wird abgebrochen. Die Front geht auf eine Linie über Cimone, Zebio und Ortigara zurück. Dort wird sie mehr als zwei Jahre lang bleiben."}]},
- {id:"karfreit",k:"Karfreit",t:"Karfreit 1917",i:{m:29,c:[13.40,46.15],z:8.7,p:30,b:0,
+ {id:"karfreit",s:"Mit Gas und neuer Taktik brechen Österreicher und Deutsche im Oktober 1917 bei Karfreit durch. Italien muss bis an den Piave zurück.",k:"Karfreit",t:"Karfreit 1917",i:{m:29,c:[13.40,46.15],z:8.7,p:30,b:0,
   x:"Herbst 1917. Elf Schlachten hat Italien am Isonzo geschlagen. Österreich-Ungarn ist am Ende seiner Kräfte und bittet Deutschland um Hilfe. Was nun folgt, wird als eine der schwersten Niederlagen in die Geschichte Italiens eingehen. In Italien heisst sie bis heute einfach: Caporetto."},
  steps:[
   {m:29,c:[13.6,46.25],z:9.4,p:35,b:0,h:"Die Ausgangslage",img:"WWI - Monte Nero - summit position during winter.jpg",cap:"Italienische Gipfelstellung am Krn über Karfreit",
@@ -29,7 +29,7 @@ window.TOURS=[
    x:"Ein junger Oberleutnant aus Württemberg, Erwin Rommel, führt seine Gebirgstruppen über die Höhen des Kolovrat. In gut zwei Tagen nimmt er Stellung um Stellung und erreicht am 26. Oktober den Gipfel des Matajur. Tausende italienische Soldaten geraten in Gefangenschaft."},
   {m:30,c:[12.6,45.95],z:8.3,p:20,b:0,h:"Rückzug an den Piave",img:"Retraite italienne sur le Tagliamento apres la bataille de Caporetto en 1917.jpg",cap:"Italienischer Rückzug an den Tagliamento, 1917",
    x:"Die italienische Armee zieht sich zurück, über den Tagliamento, auf überfüllten Strassen, zusammen mit Hunderttausenden Flüchtlingen. Erst am Piave und am Monte Grappa kommt die Front Anfang November zum Stehen. Über 260 000 italienische Soldaten sind in Gefangenschaft geraten. Doch die neue Linie wird halten."}]},
- {id:"eis",k:"Fels und Eis",t:"Krieg im Fels und Eis",i:{m:20,c:[11.30,46.35],z:7.9,p:30,b:0,
+ {id:"eis",s:"Krieg auf über 3000 Metern: Stellungen am Ortler, Stollen im Gletscher der Marmolada und gesprengte Gipfel in den Dolomiten.",k:"Fels und Eis",t:"Krieg im Fels und Eis",i:{m:20,c:[11.30,46.35],z:7.9,p:30,b:0,
   x:"Nirgends wurde je so hoch gekämpft wie an der Alpenfront. Auf Gletschern, in Fels und Eis, oft über dreitausend Meter hoch. Der grösste Feind war hier nicht immer der Gegner, sondern der Berg selbst: Kälte, Stürme und Lawinen."},
  steps:[
   {m:20,c:[10.55,46.5],z:11,p:60,b:30,h:"Ortler, 3905 m",img:"1917 ortler vorgipfelstellung 3850 m highest trench in history of first world war.jpg",cap:"Stellung am Ortler-Vorgipfel auf 3850 m, 1917",
@@ -44,7 +44,7 @@ window.TOURS=[
    x:"Am Kleinen Lagazuoi führen beide Seiten einen Krieg unter der Erde. Sie graben Stollen in den Fels und sprengen ganze Felsbänder ab. Die Narben sind bis heute zu sehen. Die Tunnel kann man heute mit Stirnlampe und Helm begehen, als Freilichtmuseum mitten in den Dolomiten."},
   {m:20,c:[12.27,46.62],z:11.6,p:60,b:-10,h:"Monte Piana und Drei Zinnen",img:"Detail aus der Piano - Stellung, 9.1.1916. (BildID 15582870).jpg",cap:"Stellung am Monte Piana, Januar 1916",
    x:"Auf dem Monte Piana liegen die Gräben beider Seiten oft nur wenige Dutzend Meter auseinander. Gegenüber ragen die Drei Zinnen auf. Am Paternkofel fällt im Juli 1915 der Bergführer Sepp Innerkofler, als er mit einer kleinen Patrouille den Gipfel zurückerobern will."}]},
- {id:"isonzo",k:"Isonzo",t:"Elf Schlachten am Isonzo",i:{m:1,c:[13.55,46.05],z:8.6,p:30,b:0,
+ {id:"isonzo",s:"Zweieinhalb Jahre, elf Offensiven, kaum Geländegewinn: vom Krn über den Karst bis zur Einnahme von Görz.",k:"Isonzo",t:"Elf Schlachten am Isonzo",i:{m:1,c:[13.55,46.05],z:8.6,p:30,b:0,
   x:"Der Isonzo, ein smaragdgrüner Fluss zwischen den Julischen Alpen und der Adria. Hier verläuft die wichtigste Front zwischen Italien und Österreich-Ungarn. Zwischen 1915 und 1917 greift Italien hier elfmal an. Elf Schlachten, Hunderttausende Tote, und doch bewegt sich die Front nur wenige Kilometer."},
  steps:[
   {m:1,c:[13.66,46.27],z:11,p:55,b:0,h:"Der Krn",img:"WWI - Monte Nero - Italian patrol.jpg",cap:"Italienische Patrouille am Krn",
@@ -55,7 +55,7 @@ window.TOURS=[
    x:"August 1916, die sechste Isonzoschlacht. In einem schnellen Angriff nehmen italienische Truppen den Monte Sabotino, der die Stadt seit einem Jahr beherrscht. Am 9. August reitet italienische Kavallerie in Görz ein. Es ist der grösste Erfolg Italiens am Isonzo."},
   {m:27,c:[13.72,46.06],z:10.6,p:50,b:10,h:"Die Bainsizza",img:"Italian Army - World War I - Italian cavalry troops on the Banjšice Plateau during the Eleventh Battle of the Isonzo, 1917.jpg",cap:"Italienische Kavallerie auf der Bainsizza, 1917",
    x:"Im August 1917 gelingt Italien in der elften Schlacht noch einmal ein Durchbruch. Die Hochfläche von Bainsizza fällt. Österreich-Ungarn ist erschöpft, eine weitere Schlacht würde seine Front wohl nicht mehr überstehen. In Wien bittet man Deutschland um Hilfe. Die Folge ist der Angriff von Karfreit."}]},
- {id:"piave",k:"Piave",t:"Das Ende am Piave 1918",i:{m:37,c:[12.10,45.85],z:8.7,p:30,b:0,
+ {id:"piave",s:"Am Grappa und am Piave hält Italien 1918 stand. Bei Vittorio Veneto bricht Österreich-Ungarn zusammen, dann folgt der Waffenstillstand.",k:"Piave",t:"Das Ende am Piave 1918",i:{m:37,c:[12.10,45.85],z:8.7,p:30,b:0,
   x:"Nach Karfreit steht Italien am Abgrund. Doch an einem Fluss und einem Berg kommt der Vormarsch zum Stehen: am Piave und am Monte Grappa. Hier fällt im Jahr 1918 die Entscheidung."},
  steps:[
   {m:37,c:[11.8,45.88],z:10.4,p:50,b:0,h:"Grappa",img:"WWI - Battle of the Piave River - Monte Grappa area - Austrian trenches on the Asolone.jpg",cap:"Österreichisch-ungarische Gräben am Asolone",

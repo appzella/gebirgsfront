@@ -84,6 +84,20 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body)
 .tband.on{opacity:1}
 .tcur{display:none;align-items:center;gap:6px;min-height:36px;padding:0 12px;font:inherit;font-family:var(--f-label);font-size:14.5px;color:var(--paper);background:var(--ink);border:0;border-radius:0;cursor:pointer;min-width:0;flex:0 1 auto}
 .tcur span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Filmkarte über der Zeitleiste */
+.tcard{position:absolute;bottom:calc(100% + 10px);width:min(320px,calc(100vw - 24px));box-sizing:border-box;z-index:6;background:var(--paper);
+  border:1px solid var(--ink);box-shadow:0 6px 24px rgba(44,39,33,.28);padding:11px 14px 13px;animation:tcin .15s ease-out}
+.tcard::after{content:"";position:absolute;top:100%;left:var(--ax,50%);width:12px;height:12px;background:var(--paper);border:1px solid var(--ink);border-top:0;border-left:0;transform:translate(-50%,-6px) rotate(45deg)}
+.tcard[hidden]{display:none}
+.tc-kick{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.tc-title{font-family:var(--f-display);font-size:20px;line-height:1.15;margin:3px 30px 1px 0}
+.tc-date{font-family:var(--f-label);font-style:italic;font-size:14px;color:var(--ink-soft)}
+.tc-sum{font-size:13.5px;line-height:1.45;margin:7px 0 10px}
+.tc-go{display:inline-flex;align-items:center;gap:7px;font:inherit;font-family:var(--f-label);font-size:15px;color:var(--paper);background:var(--ink);border:0;padding:7px 14px;cursor:pointer}
+.tc-go:hover{background:var(--front)}
+.tc-x{position:absolute;top:4px;right:4px;font-size:20px;line-height:1;background:none;border:0;color:var(--ink);cursor:pointer;padding:4px 8px}
+.tc-go:focus-visible,.tc-x:focus-visible{outline:2px solid var(--front);outline-offset:2px}
+@keyframes tcin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .tcur:focus-visible{outline:2px solid var(--front);outline-offset:2px}
 .phase{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:2px 14px;align-items:baseline;border-top:1px solid var(--rule);padding-top:7px;min-width:0}
 #phaseTitle{font-family:var(--f-label);font-style:italic;font-size:17px}
@@ -341,6 +355,7 @@ body.filming .maplibregl-ctrl-bottom-left{opacity:0;pointer-events:none;transiti
     <div id="date" aria-live="polite">Mai 1915</div>
     <button type="button" class="tcur" id="tcur" hidden></button>
   </div>
+  <div class="tcard" id="tcard" role="dialog" aria-label="Geführter Film" hidden></div>
   <div class="track">
     <div class="tlane" id="tlane" aria-label="Filme zu diesem Zeitraum"></div>
     <div class="trk"><div class="tband" id="tband"></div>
@@ -1014,28 +1029,61 @@ function endTour(){
   setTimeout(()=>{if(!tour)film.hidden=true;},600);
   map.easeTo({padding:{top:0,bottom:0,left:0,right:0},duration:800});
 }
-/* Fähnchen in der Zeitleiste: Antippen startet den Film; hervorgehoben ist der Film zum gewählten Monat */
+/* Fähnchen in der Zeitleiste. Maus: Darüberfahren zeigt die Filmkarte, Klick startet den Film.
+   Finger: Antippen zeigt die Karte, ihr Knopf startet den Film. Hervorgehoben ist der Film zum gewählten Monat. */
 const tSpan=t=>{const ms=[t.i.m,...t.steps.map(s=>s.m)];return [Math.min(...ms),Math.max(...ms)];};
-const tlane=$("tlane"),tband=$("tband"),tcur=$("tcur");
-tcur.addEventListener("click",()=>startTour(tcur.dataset.id));
+const tlane=$("tlane"),tband=$("tband"),tcur=$("tcur"),tcard=$("tcard");
+const hoverDev=matchMedia("(hover:hover) and (pointer:fine)");
 const filmIcon='<svg width="12" height="10" viewBox="0 0 12 10" aria-hidden="true"><path d="M2 1.2L10.5 5L2 8.8Z" fill="currentColor"/></svg>';
+let cardFor=null,cardT=null;
+function showCard(c,anchor){
+  clearTimeout(cardT);
+  if(cardFor!==c){
+    cardFor=c;const t=c.t;
+    tcard.innerHTML=`<div class="tc-kick">Geführter Film · rund ${Math.round((t.steps.length+1)*27/60)} Minuten</div>
+      <div class="tc-title">${t.t}</div><div class="tc-date">${mName(c.a)} bis ${mName(c.b)}</div>
+      ${t.s?`<p class="tc-sum">${t.s}</p>`:""}
+      <button type="button" class="tc-go">${filmIcon}<span>Film starten</span></button>
+      <button type="button" class="tc-x" aria-label="Schliessen">×</button>`;
+    tcard.querySelector(".tc-go").addEventListener("click",()=>{hideCard(0);startTour(t.id);});
+    tcard.querySelector(".tc-x").addEventListener("click",()=>{hideCard(0);anchor.focus();});
+  }
+  tcard.hidden=false;showBand(c.a,c.b);
+  // über dem Fähnchen ausrichten, aber innerhalb der Zeitleiste halten
+  const tb=timebarEl.getBoundingClientRect(),r=anchor.getBoundingClientRect(),w=tcard.offsetWidth;
+  tcard.style.left=Math.max(0,Math.min(tb.width-w,r.left+r.width/2-tb.left-w/2))+"px";
+  tcard.style.setProperty("--ax",(r.left+r.width/2-tb.left-parseFloat(tcard.style.left))+"px");
+}
+function hideCard(delay){
+  clearTimeout(cardT);
+  cardT=setTimeout(()=>{tcard.hidden=true;cardFor=null;tourHint(+slider.value);},delay);
+}
+tcard.addEventListener("mouseenter",()=>clearTimeout(cardT));
+tcard.addEventListener("mouseleave",()=>hideCard(250));
+document.addEventListener("pointerdown",e=>{if(!tcard.hidden&&!e.target.closest(".tcard,.tchip,.tcur"))hideCard(0);});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!tcard.hidden)hideCard(0);});
 var tChips=TOURS.map(t=>{
   const [a,b]=tSpan(t),btn=document.createElement("button");
   btn.type="button";btn.className="tchip"+(t.i.m>34?" end":"");btn.style.left=pos(t.i.m);
   btn.innerHTML=filmIcon+`<span>${t.k||t.t}</span>`;
-  btn.title=`Film: ${t.t} (${mName(a)} bis ${mName(b)})`;btn.setAttribute("aria-label",btn.title);
-  btn.addEventListener("click",()=>startTour(t.id));
-  btn.addEventListener("mouseenter",()=>showBand(a,b));btn.addEventListener("focus",()=>showBand(a,b));
-  btn.addEventListener("mouseleave",()=>tourHint(+slider.value));btn.addEventListener("blur",()=>tourHint(+slider.value));
-  tlane.appendChild(btn);return {t,a,b,btn};
+  btn.setAttribute("aria-label",`Film: ${t.t} (${mName(a)} bis ${mName(b)})`);
+  const c={t,a,b,btn};
+  btn.addEventListener("click",()=>{hoverDev.matches?startTour(t.id):(cardFor===c&&!tcard.hidden?hideCard(0):showCard(c,btn));});
+  btn.addEventListener("mouseenter",()=>{if(hoverDev.matches)showCard(c,btn);});
+  btn.addEventListener("mouseleave",()=>{if(hoverDev.matches)hideCard(250);});
+  btn.addEventListener("focus",()=>{if(btn.matches(":focus-visible"))showCard(c,btn);});
+  btn.addEventListener("blur",e=>{if(!tcard.contains(e.relatedTarget))hideCard(150);});
+  tlane.appendChild(btn);return c;
 });
+tcur.addEventListener("click",()=>{const c=tChips.find(c=>c.t.id===tcur.dataset.id);if(c)cardFor===c&&!tcard.hidden?hideCard(0):showCard(c,tcur);});
 if(!TOURS.length)tlane.hidden=true;
 function showBand(a,b){tband.style.left=pos(a);tband.style.width=`calc((100% - 18px) * ${(b-a)/42})`;tband.classList.add("on");}
 function tourHint(i){
   if(!tChips)return;
   const hit=tChips.filter(c=>i>=c.a&&i<=c.b).sort((x,y)=>(x.b-x.a)-(y.b-y.a))[0];
   tChips.forEach(c=>c.btn.classList.toggle("cur",c===hit));
-  tcur.hidden=!hit;if(hit){tcur.innerHTML=filmIcon+`<span>${hit.t.k||hit.t.t}</span>`;tcur.dataset.id=hit.t.id;tcur.setAttribute("aria-label",hit.btn.title);}
+  tcur.hidden=!hit;if(hit){tcur.innerHTML=filmIcon+`<span>${hit.t.k||hit.t.t}</span>`;tcur.dataset.id=hit.t.id;tcur.setAttribute("aria-label",hit.btn.getAttribute("aria-label"));}
+  if(cardFor)return;
   hit?showBand(hit.a,hit.b):tband.classList.remove("on");
 }
 tourHint(+slider.value);
