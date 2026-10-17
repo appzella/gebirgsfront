@@ -1278,7 +1278,7 @@ const fitFront=()=>map.fitBounds(FRONT_BB,{padding:freePad(),duration:0});
    #film/karfreit                Film mit Titelkarte */
 const mKey=i=>{const t=i+4;return (1915+Math.floor(t/12))+"-"+String(t%12+1).padStart(2,"0");};
 function readHash(){
-  const h=decodeURIComponent(location.hash.slice(1)).split("/");
+  let h;try{h=decodeURIComponent(location.hash.slice(1)).split("/");}catch(e){h=[];}  // kaputte Prozentzeichen wie #% ignorieren
   if(h[0]==="film")return {film:h[1]};
   const r=/^(\d{4})-(\d{1,2})$/.exec(h[0]||""),i=r?M(+r[1],+r[2]):-1;
   const n=h.slice(1,6).map(Number),ok=n.length>=3&&n.slice(0,3).every(Number.isFinite);
